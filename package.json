@@ -1,0 +1,32 @@
+{
+  "name": "ply-js-loader",
+  "version": "1.0.0",
+  "description": "A PLY file loader for Javascript and Typescript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "prepublish": "tsc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PhilipKlaus/ply-js-loader.git"
+  },
+  "keywords": [
+    "ply",
+    "3d",
+    "cloud",
+    "mesh",
+    "webgl"
+  ],
+  "author": "Philip Klaus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PhilipKlaus/ply-js-loader/issues"
+  },
+  "homepage": "https://github.com/PhilipKlaus/ply-js-loader#readme",
+  "devDependencies": {
+    "typescript": "^3.9.6"
+  }
+}
