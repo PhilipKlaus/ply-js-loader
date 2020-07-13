@@ -1,5 +1,5 @@
-import { PlyLoader } from "./plyLoader";
+import { Ply } from "./plyLoader";
 
 export {
-    PlyLoader
+    Ply
 }

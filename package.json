@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
+    "coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test"
   },
   "prepublish": "tsc",
   "repository": {
@@ -27,6 +28,10 @@
   },
   "homepage": "https://github.com/PhilipKlaus/ply-js-loader#readme",
   "devDependencies": {
+    "@types/jasmine": "^3.5.11",
+    "jasmine": "^3.5.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.6"
   }
 }
