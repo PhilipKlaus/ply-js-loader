@@ -42,7 +42,8 @@ export namespace Ply {
         name: string
         count: number,
         byteSize: number,
-        properties: PlyProperty[]
+        properties: PlyProperty[],
+        buffer?: ArrayBuffer
     }
     
     export class PlyLoader {
@@ -82,7 +83,7 @@ export namespace Ply {
                             name: currentElementName,
                             count: parseInt(lineParts[2]),
                             byteSize: 0,
-                            properties: []
+                            properties: [],
                         });
                         break;
                     case "property":
@@ -128,7 +129,20 @@ export namespace Ply {
         get elements(): PlyElement[] {
             return this._elements;
         }
-    
+        
+        private getElement(elementName: string, conversion: (view: DataView, byteOffset: number) => number): ArrayBuffer{
+            return new ArrayBuffer(1);
+        }
+
+        public getFloat32Element(elementName: string): Float32Array {
+            return this.getElement(
+                elementName,
+                (view: DataView, byteOffset: number): number => {
+                    return view.getFloat32(byteOffset);
+                }
+            ) as Float32Array;
+        }
+
         public static loadFromString(plyFile: string) {
     
             const headerString = extractHeader(plyFile);
