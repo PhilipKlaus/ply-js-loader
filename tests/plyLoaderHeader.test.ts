@@ -46,10 +46,10 @@ end_header
 
 describe("After loading a ply file a PlyLoader object", function() {
 
-  let loader: Ply.PlyLoader;
+  let loader: Ply.File;
 
   beforeEach(function() {
-    loader = Ply.PlyLoader.loadFromString(testPly);
+    loader = Ply.File.loadFromString(testPly);
   });
 
     it("returns comments", function() {
@@ -74,7 +74,7 @@ describe("After loading a ply file a PlyLoader object", function() {
 
     it("returns elements", function() {
 
-      const elements: Ply.PlyElement[] = loader.elements;
+      const elements: Ply.Element[] = loader.elements;
       expect(loader.elements).toEqual([
         {
           name: "vertex",

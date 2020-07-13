@@ -30,29 +30,29 @@ function getByteSizeFromType(type: string) {
 
 export namespace Ply {
 
-    export interface PlyProperty {
-        name: string,
-        scalarType: string
-        byteSize: number,
-        listSizeType: string,
-        isList: boolean
+    export class Property {
+
+        public name: string = "";
+        public scalarType: string = "";
+        public byteSize: number = 0;
+        public listSizeType: string = "";
+        public isList: boolean = false;
     }
     
-    export interface PlyElement {
-        name: string
-        count: number,
-        byteSize: number,
-        properties: PlyProperty[],
-        buffer?: ArrayBuffer
+    export class Element {
+        public name: string = "";
+        public count: number = 0;
+        public byteSize: number = 0;
+        public properties: Property[] = [];
     }
     
-    export class PlyLoader {
+    export class File {
     
         private _format!: string;
         private _formatEndianness: string = "little_endian";
         private _formatVersion!: number;
         private _comments: string[] = [];
-        private _elements: PlyElement[] = [];
+        private _elements: Element[] = [];
     
         private constructor(header: string) {
             const headerLines: string[] = header.split("\n");
@@ -126,7 +126,7 @@ export namespace Ply {
             return this._formatVersion;
         }
     
-        get elements(): PlyElement[] {
+        get elements(): Element[] {
             return this._elements;
         }
         
@@ -146,7 +146,7 @@ export namespace Ply {
         public static loadFromString(plyFile: string) {
     
             const headerString = extractHeader(plyFile);
-            return new PlyLoader(headerString);
+            return new File(headerString);
         }
     
         public static loadFromArrayBuffer(buffer: ArrayBuffer) {
@@ -154,7 +154,7 @@ export namespace Ply {
             const encoder = new TextDecoder("ascii");
             const plyFile = encoder.decode(buffer);
             const headerString = extractHeader(plyFile);
-            return new PlyLoader(headerString);
+            return new File(headerString);
         }
     }
 }
