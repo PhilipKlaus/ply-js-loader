@@ -1,4 +1,4 @@
-import { Ply } from "./plyLoader";
+import { Ply.Property } from "./plyFile";
 
 export {
     Ply

@@ -28,7 +28,7 @@ function getByteSizeFromType(type: string) {
     };
 }
 
-export namespace Ply {
+namespace Ply {
 
     export class Property {
 
