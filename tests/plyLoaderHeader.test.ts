@@ -1,4 +1,4 @@
-import { Ply } from "../src";
+import { PlyFile, PlyElement } from "../src";
 
 const testPly: string = 
 `
@@ -46,10 +46,10 @@ end_header
 
 describe("After loading a ply file a PlyLoader object", function() {
 
-  let loader: Ply.File;
+  let loader: PlyFile;
 
   beforeEach(function() {
-    loader = Ply.File.loadFromString(testPly);
+    loader = PlyFile.loadFromString(testPly);
   });
 
     it("returns comments", function() {
@@ -74,7 +74,7 @@ describe("After loading a ply file a PlyLoader object", function() {
 
     it("returns elements", function() {
 
-      const elements: Ply.Element[] = loader.elements;
+      const elements: PlyElement[] = loader.elements;
       expect(loader.elements).toEqual([
         {
           name: "vertex",

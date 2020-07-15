@@ -1,5 +1,9 @@
-import { Ply.Property } from "./plyFile";
+import { PlyFile } from "./plyFile";
+import { PlyElement } from "./plyElement";
+import { PlyProperty } from "./plyProperty";
 
 export {
-    Ply
+    PlyFile,
+    PlyElement,
+    PlyProperty
 }
