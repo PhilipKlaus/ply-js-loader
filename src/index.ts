@@ -5,5 +5,5 @@ import { PlyProperty } from "./plyProperty";
 export {
     PlyFile,
     PlyElement,
-    PlyProperty
+    PlyProperty,
 }

@@ -1,4 +1,5 @@
 import { PlyElement } from "./plyElement";
+import { PlyProperty } from "./plyProperty";
 
 function extractHeader(plyFile: string): string {
     let endHeaderIndex: number = plyFile.lastIndexOf("end_header");
@@ -36,8 +37,10 @@ export class PlyFile {
     private _formatVersion!: number;
     private _comments: string[] = [];
     private _elements: PlyElement[] = [];
+    private _body: ArrayBuffer | String;
 
-    private constructor(header: string) {
+    private constructor(header: string, body: ArrayBuffer | String) {
+        this._body = body;
         const headerLines: string[] = header.split("\n");
         
         let currentElementName = "";
@@ -62,36 +65,61 @@ export class PlyFile {
                 case "element":
                     ++currentElementIndex;
                     currentElementName = lineParts[1];
-                    this._elements.push({
-                        name: currentElementName,
-                        count: parseInt(lineParts[2]),
-                        byteSize: 0,
-                        properties: [],
-                    });
+                    this._elements.push(
+                        new PlyElement(
+                            currentElementName,
+                            parseInt(lineParts[2])
+                        )
+                    );
                     break;
                 case "property":
                     let isList = lineParts[1] == "list";
                     let propertyName = lineParts[lineParts.length - 1];
                     let scalarType = lineParts[lineParts.length - 2];
-                    let byteSize = getByteSizeFromType(scalarType);
                     
-                    this._elements[currentElementIndex].properties.push({
-                        name: propertyName,
-                        scalarType: scalarType,
-                        byteSize: byteSize,
-                        isList: isList,
-                        listSizeType: isList ? lineParts[2] : ""
-                    });
-
-                    if(!isList) {
-                        this._elements[currentElementIndex].byteSize += byteSize;
-                    }
+                    this._elements[currentElementIndex].properties.push(
+                        new PlyProperty(
+                            propertyName,
+                            scalarType,
+                            isList,
+                            isList ? lineParts[2] : undefined,
+                        )
+                    );
+                    this._elements[currentElementIndex].hasListProperty = isList ? true : this._elements[currentElementIndex].hasListProperty;
                     break;
                 default:
                     break;
             }
         });
+
+        this.calculateElementBuffer();
     }
+
+    private calculateElementBuffer() {
+        let elementIndex = 0;
+        let propertyIndex = 0;
+        let element = this._elements[elementIndex];
+        let property = element.properties[propertyIndex];
+        let buffer: Array<number> = [];
+        
+        (this.body as string).split("\n").forEach(row => {
+            let currentType = property.scalarType;
+            let isList = property.isList;
+            let listIndex = 0;
+            row.split( /\s+/ ).forEach(num => {
+                if(isList) {
+                    if(listIndex > 0) {
+                        buffer.push((currentType == "float" || currentType == "double") ? parseFloat(num) : parseInt(num));
+                    }
+                    ++listIndex;
+                }
+                else {
+                    buffer.push((currentType == "float" || currentType == "double") ? parseFloat(num) : parseInt(num));
+                }
+            });
+        });
+        //let arrayBuffer = new ArrayBuffer(buffer);
+    } 
 
     get comments(): string[] {
         return this._comments;
@@ -112,6 +140,10 @@ export class PlyFile {
     get elements(): PlyElement[] {
         return this._elements;
     }
+
+    get body(): ArrayBuffer | String {
+        return this._body;
+    }
     
     private getElement(elementName: string, conversion: (view: DataView, byteOffset: number) => number): ArrayBuffer{
         return new ArrayBuffer(1);
@@ -128,16 +160,18 @@ export class PlyFile {
 
     public static loadFromString(plyFile: string) {
 
-        const headerString = extractHeader(plyFile);
-        return new PlyFile(headerString);
+        const header = extractHeader(plyFile);
+        const body = plyFile.slice(header.length + 1);
+        return new PlyFile(header, body);
     }
 
     public static loadFromArrayBuffer(buffer: ArrayBuffer) {
 
         const encoder = new TextDecoder("ascii");
         const plyFile = encoder.decode(buffer);
-        const headerString = extractHeader(plyFile);
-        return new PlyFile(headerString);
+        const header = extractHeader(plyFile);
+        const body = buffer.slice(header.length + 1);
+        return new PlyFile(header, body);
     }
 }
 
