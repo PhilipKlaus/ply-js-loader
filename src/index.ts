@@ -1,9 +1,11 @@
-import { PlyFile } from "./plyFile";
-import { PlyElement } from "./plyElement";
-import { PlyProperty } from "./plyProperty";
+import { PlyFile, BufferConfig, BufferResult } from "./plyFile";
+import { PlyElement, PlyProperty, PlyMetadata } from "./plyMetadata";
 
 export {
     PlyFile,
     PlyElement,
     PlyProperty,
+    BufferConfig,
+    BufferResult,
+    PlyMetadata
 }
