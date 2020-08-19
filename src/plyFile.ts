@@ -18,6 +18,16 @@ interface DataElement {
     [element: string]: DataBuffer
 }
 
+export interface ParsingConfiguration {
+    [element: string]: {
+        [configName: string]: string[]
+    }
+}
+
+export interface PlyParsingResult {
+    [configName: string]: ArrayBuffer
+}
+
 function extractHeader(plyFile: string): string {
     let endHeaderIndex: number = plyFile.lastIndexOf("end_header");
     if(endHeaderIndex === -1) {
@@ -57,9 +67,6 @@ export class PlyFile {
         this._metadata = new PlyMetadata();
         this._body = body;
         this.parseHeader(header);
-        if(this._metadata.format === "ascii") {
-            this.preCalculateAsciiBody();
-        }
     }
 
     private parseHeader(header: string) {
@@ -115,7 +122,7 @@ export class PlyFile {
         });
     }
 
-    private preCalculateAsciiBody() {
+    public parsePlyBody(configuration?: ParsingConfiguration): PlyParsingResult | void {
         let elementIndex = -1;
         let propertyIndex = -1;
         let linesToRead = 0;

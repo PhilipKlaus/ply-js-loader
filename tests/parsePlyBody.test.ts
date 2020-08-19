@@ -42,7 +42,7 @@ end_header
 3 0 255 255 255
 2 0 0 0 0`
 
-describe("After calling preCalculateElements", function() {
+describe("Calling parsePlyBody", function() {
 
     let plyFile: PlyFile;
 
@@ -50,7 +50,21 @@ describe("After calling preCalculateElements", function() {
         plyFile = PlyFile.loadFromString(testPly);
     });
 
+    it("without a ParsingConfiguration returns void", function() {
+        expect(plyFile.parsePlyBody()).toBeUndefined();
+    });
+
+    it("without a ParsingConfiguration returns void", function() {
+        plyFile.parsePlyBody({
+            "vertex": {
+                "vertices": ["x", "y", "z"],
+                "colors": ["red", "green", "blue"]
+            }
+        });
+    });
+
     it("_elements has element entries", function() {
+        plyFile.parsePlyBody();
         expect((plyFile as any)._elements.vertex).toBeDefined();
         expect((plyFile as any)._elements.face).toBeDefined();
         expect((plyFile as any)._elements.edge).toBeDefined();
