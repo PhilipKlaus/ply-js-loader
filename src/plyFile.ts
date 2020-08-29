@@ -24,8 +24,13 @@ export interface ParsingConfiguration {
     }
 }
 
+export interface PlyParsingResultBuffer {
+    [configName: string]: number[]
+}
+
+
 export interface PlyParsingResult {
-    [configName: string]: ArrayBuffer
+    [configName: string]: number[]
 }
 
 function extractHeader(plyFile: string): string {
@@ -75,9 +80,13 @@ export class PlyFile {
         let currentElementName = "";
         let currentElementIndex = -1;
 
-        headerLines.forEach(line => {
-            const lineParts = line.split( /\s+/ );
-            
+        for(let i = 0; i < headerLines.length; ++i) {
+            let line = headerLines[i];    
+
+            if(!line) {
+                continue;
+            }
+            const lineParts = line.trim().split( /\s+/ );
             
             switch(lineParts[0]) {
                 case "format":
@@ -119,53 +128,72 @@ export class PlyFile {
                 default:
                     break;
             }
-        });
+        }
     }
 
-    public parsePlyBody(configuration?: ParsingConfiguration): PlyParsingResult | void {
+    public parsePlyBody(configuration: ParsingConfiguration = {}): PlyParsingResult | void {
+        let resultBuffer: PlyParsingResult = {};
+        for (let element in configuration) {
+            for (let config in configuration[element]) {
+                resultBuffer[config] = [];
+            }
+        }
+
         let elementIndex = -1;
         let propertyIndex = -1;
         let linesToRead = 0;
 
-        let element: PlyElement;
-        let property: PlyProperty;
+        let element: PlyElement = {} as PlyElement;
+        let property: PlyProperty = {} as PlyProperty;
         
-        (this._body as string).split("\n").forEach(row => {
-            if(linesToRead == 0) {
-                // Calculate current index etc.
-                ++elementIndex;
-                element = this._metadata.elements[elementIndex];
-                property = element.properties[0];
-                linesToRead = element.count;
+        let bodySplit = (this._body as string).split("\n");
 
-                // Prepare
-                this._elements[element.name] = {};
-                this._metadata.elements[elementIndex].properties.forEach(prop => {
-                    this._elements[element.name][prop.name] = [];
-                });
-            }
+        let isList: boolean = false;
+        let currentType: string = "";
+        let numSplit: string[] = [];
 
-            propertyIndex = 0;
-            let currentType = property.scalarType;
-            let isList = property.isList;
-            let listIndex = 0;
+        for(let i = 0; i < bodySplit.length; ++i) {
 
-            row.split( /\s+/ ).forEach(num => {
-                if(isList) {
-                    if(listIndex > 0) {
-                        this._elements[element.name][property.name].push((currentType == "float" || currentType == "double") ? parseFloat(num) : parseInt(num));
-                    }
-                    ++listIndex;
+            numSplit = bodySplit[i].match(/\S+/g) || [];
+            if(numSplit.length > 0) {
+                if(linesToRead == 0) {
+                    // Calculate current index etc.
+                    element = this._metadata.elements[++elementIndex];
+                    property = element.properties[0];
+                    linesToRead = element.count;
+    
+                    // Prepare
+                    this._elements[element.name] = {};
+                    this._metadata.elements[elementIndex].properties.forEach(prop => {
+                        this._elements[element.name][prop.name] = [];
+                    });
                 }
-                else {
+    
+                propertyIndex = 0;
+                currentType = property.scalarType;
+                isList = property.isList;
+    
+                for(let n = isList? 1 : 0; n < numSplit.length; ++n) {                
                     property = element.properties[propertyIndex];
-                    this._elements[element.name][property.name].push((currentType == "float" || currentType == "double") ? parseFloat(num) : parseInt(num));
-                    ++propertyIndex;
+                    this._elements[element.name][property.name].push(Number(numSplit[n]));
+                    propertyIndex += Number(!isList);
                 }
-            });
-
-            --linesToRead;
-        });
+    
+                if(!isList && element.name in configuration) {
+                    for (let config in configuration[element.name]) {
+                        configuration[element.name][config].forEach(prop => {
+                            let lastElement = this._elements[element.name][prop].length - 1;
+                            resultBuffer[config].push(this._elements[element.name][prop][lastElement]);
+                        }); 
+                    }
+                }
+                --linesToRead;
+            }
+        }
+        
+        if(Object.keys(resultBuffer).length !== 0) {
+            return resultBuffer;
+        }
     }
 
     get metadata(): PlyMetadata {

@@ -1,4 +1,4 @@
-import { PlyFile, BufferConfig, BufferResult, ParsingConfiguration } from "./plyFile";
+import { PlyFile, BufferConfig, BufferResult, ParsingConfiguration, PlyParsingResult } from "./plyFile";
 import { PlyElement, PlyProperty, PlyMetadata } from "./plyMetadata";
 
 export {
@@ -8,5 +8,6 @@ export {
     BufferConfig,
     BufferResult,
     PlyMetadata,
-    ParsingConfiguration
+    ParsingConfiguration,
+    PlyParsingResult
 }

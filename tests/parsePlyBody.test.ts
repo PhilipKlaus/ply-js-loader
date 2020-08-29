@@ -1,4 +1,4 @@
-import { PlyFile } from "../src";
+import { PlyFile, PlyParsingResult } from "../src";
 
 const testPly: string = 
 `ply
@@ -40,7 +40,8 @@ end_header
 1 2 255 255 255
 2 3 255 255 255
 3 0 255 255 255
-2 0 0 0 0`
+2 0 0 0 0
+`
 
 describe("Calling parsePlyBody", function() {
 
@@ -54,15 +55,77 @@ describe("Calling parsePlyBody", function() {
         expect(plyFile.parsePlyBody()).toBeUndefined();
     });
 
-    it("without a ParsingConfiguration returns void", function() {
-        plyFile.parsePlyBody({
-            "vertex": {
-                "vertices": ["x", "y", "z"],
-                "colors": ["red", "green", "blue"]
-            }
+    describe("returns a PlyParsingResult", function() {
+
+        let result: PlyParsingResult | void;
+
+        beforeEach(function() {
+            result = plyFile.parsePlyBody({
+                "vertex": {
+                    "vertices": ["x", "y", "z"],
+                    "colors": ["red", "green", "blue"]
+                },
+                "edge": {
+                    "edgeColor": ["red", "green", "blue"],
+                    "mix": ["red", "vertex2", "vertex1"]
+                }
+            });
+            expect(result).toBeDefined();
+        });
+
+        it("which contains values", function() {
+            expect((result as PlyParsingResult).vertices).toBeDefined();
+            expect((result as PlyParsingResult).vertices).toEqual(
+                [
+                    0, 0, 0,
+                    0, 0, 1,
+                    0, 1, 1,
+                    0, 1, 0,
+                    1, 0, 0,
+                    1, 0, 1,
+                    1, 1, 1,
+                    1, 1, 0
+                ]
+            );
+
+            expect((result as PlyParsingResult).colors).toBeDefined();
+            expect((result as PlyParsingResult).colors).toEqual(
+                [
+                    255, 0, 0,
+                    255, 0, 0,
+                    255, 0, 0,
+                    255, 0, 0,
+                    0, 0, 255,
+                    0, 0, 255,
+                    0, 0, 255,
+                    0, 0, 255
+                ]
+            );
+
+            expect((result as PlyParsingResult).edgeColor).toBeDefined();
+            expect((result as PlyParsingResult).edgeColor).toEqual(
+                [
+                    255, 255, 255,
+                    255, 255, 255,
+                    255, 255, 255,
+                    255, 255, 255,
+                    0, 0, 0
+                ]
+            );
+
+            expect((result as PlyParsingResult).mix).toBeDefined();
+            expect((result as PlyParsingResult).mix).toEqual(
+                [
+                    255, 1, 0,
+                    255, 2, 1,
+                    255, 3, 2,
+                    255, 0, 3,
+                    0, 0, 2
+                ]
+            );
         });
     });
-
+    
     it("_elements has element entries", function() {
         plyFile.parsePlyBody();
         expect((plyFile as any)._elements.vertex).toBeDefined();
