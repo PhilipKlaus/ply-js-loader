@@ -150,45 +150,54 @@ export class PlyFile {
 
         let isList: boolean = false;
         let currentType: string = "";
-        let numSplit: string[] = [];
+        let oldIdx = 0;
 
         for(let i = 0; i < bodySplit.length; ++i) {
 
-            numSplit = bodySplit[i].match(/\S+/g) || [];
-            if(numSplit.length > 0) {
-                if(linesToRead == 0) {
-                    // Calculate current index etc.
-                    element = this._metadata.elements[++elementIndex];
-                    property = element.properties[0];
-                    linesToRead = element.count;
-    
-                    // Prepare
-                    this._elements[element.name] = {};
-                    this._metadata.elements[elementIndex].properties.forEach(prop => {
-                        this._elements[element.name][prop.name] = [];
-                    });
-                }
-    
-                propertyIndex = 0;
-                currentType = property.scalarType;
-                isList = property.isList;
-    
-                for(let n = isList? 1 : 0; n < numSplit.length; ++n) {                
-                    property = element.properties[propertyIndex];
-                    this._elements[element.name][property.name].push(Number(numSplit[n]));
-                    propertyIndex += Number(!isList);
-                }
-    
-                if(!isList && element.name in configuration) {
-                    for (let config in configuration[element.name]) {
-                        configuration[element.name][config].forEach(prop => {
-                            let lastElement = this._elements[element.name][prop].length - 1;
-                            resultBuffer[config].push(this._elements[element.name][prop][lastElement]);
-                        }); 
-                    }
-                }
-                --linesToRead;
+            if(!bodySplit[i]) {
+                continue;
             }
+
+            if(linesToRead == 0) {
+                // Calculate current index etc.
+                element = this._metadata.elements[++elementIndex];
+                property = element.properties[0];
+                linesToRead = element.count;
+
+                // Prepare
+                this._elements[element.name] = {};
+                this._metadata.elements[elementIndex].properties.forEach(prop => {
+                    this._elements[element.name][prop.name] = [];
+                });
+            }
+
+            propertyIndex = 0;
+            currentType = property.scalarType;
+            isList = property.isList;
+
+            oldIdx = 0
+            for(let a = 0; a < bodySplit[i].length; ++a) {
+                if(bodySplit[i][a] == " ") {
+                    property = element.properties[propertyIndex];
+                    this._elements[element.name][property.name].push(Number(bodySplit[i].substring(oldIdx, a)));
+                    propertyIndex += Number(!isList);
+                    oldIdx = a + 1;
+                }
+                else if(a == bodySplit[i].length-1) {
+                    property = element.properties[propertyIndex];
+                    this._elements[element.name][property.name].push(Number(bodySplit[i].substring(oldIdx, a + 1)));
+                }
+              }
+
+            if(!isList && element.name in configuration) {
+                for (let config in configuration[element.name]) {
+                    configuration[element.name][config].forEach(prop => {
+                        let lastElement = this._elements[element.name][prop].length - 1;
+                        resultBuffer[config].push(this._elements[element.name][prop][lastElement]);
+                    }); 
+                }
+            }
+            --linesToRead;
         }
         
         if(Object.keys(resultBuffer).length !== 0) {
