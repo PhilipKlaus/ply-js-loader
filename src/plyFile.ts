@@ -191,19 +191,6 @@ export class PlyFile {
     get metadata(): PlyMetadata {
         return this.itsMetadata;
     }
-    
-    private getElement(elementName: string, conversion: (view: DataView, byteOffset: number) => number): ArrayBuffer{
-        return new ArrayBuffer(1);
-    }
-
-    public getFloat32Element(elementName: string): Float32Array {
-        return this.getElement(
-            elementName,
-            (view: DataView, byteOffset: number): number => {
-                return view.getFloat32(byteOffset);
-            }
-        ) as Float32Array;
-    }
 
     public static loadFromString(plyFile: string) {
 
