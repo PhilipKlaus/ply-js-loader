@@ -108,6 +108,16 @@ export class PlyFile {
         }
     }
 
+    private prepareResultBuffer(configuration: ParsingConfiguration = {}): PlyParsingResult {
+        let resultBuffer: PlyParsingResult = {};
+        for (let element in configuration) {
+            for (let config in configuration[element]) {
+                resultBuffer[config] = [];
+            }
+        }
+        return resultBuffer;
+    }
+
     public parsePlyBody(configuration: ParsingConfiguration = {}): PlyParsingResult | void {
         if(this.itsMetadata.format === "ascii") {
             return this.parsePlyAsciiBody(configuration);
@@ -118,12 +128,7 @@ export class PlyFile {
     }
 
     private parsePlyAsciiBody(configuration: ParsingConfiguration = {}): PlyParsingResult | void {
-        let resultBuffer: PlyParsingResult = {};
-        for (let element in configuration) {
-            for (let config in configuration[element]) {
-                resultBuffer[config] = [];
-            }
-        }
+        let resultBuffer:PlyParsingResult = this.prepareResultBuffer(configuration);
         
         let bodySplit = (this.itsBody as string).split("\n");
         
