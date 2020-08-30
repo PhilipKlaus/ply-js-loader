@@ -125,12 +125,4 @@ describe("Calling parsePlyBody", function() {
             );
         });
     });
-    
-    it("_elements has element entries", function() {
-        plyFile.parsePlyBody();
-        expect((plyFile as any)._elements.vertex).toBeDefined();
-        expect((plyFile as any)._elements.face).toBeDefined();
-        expect((plyFile as any)._elements.edge).toBeDefined();
-    });
-
 });

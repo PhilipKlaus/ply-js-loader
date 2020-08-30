@@ -3,12 +3,14 @@ export class PlyProperty {
     private itsScalarType: string;
     private itsIsList: boolean;
     private itsListSizeType: string | undefined;
+    private itsBuffer: number[]
 
     constructor(name: string, scalarType: string, isList: boolean, listSizeType?: string) {
         this.itsName = name;
         this.itsScalarType = scalarType;
         this.itsIsList = isList;
         this.itsListSizeType = listSizeType;
+        this.itsBuffer = [];
     }
 
     get name(): string {
@@ -25,6 +27,10 @@ export class PlyProperty {
 
     get listSizeType(): string | undefined{
         return this.itsListSizeType;
+    }
+
+    get buffer(): number[] {
+        return this.itsBuffer;
     }
  }
 
