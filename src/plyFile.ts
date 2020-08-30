@@ -191,10 +191,6 @@ export class PlyFile {
     get metadata(): PlyMetadata {
         return this.itsMetadata;
     }
-
-    get body(): ArrayBuffer | String {
-        return this.itsBody;
-    }
     
     private getElement(elementName: string, conversion: (view: DataView, byteOffset: number) => number): ArrayBuffer{
         return new ArrayBuffer(1);
@@ -211,17 +207,17 @@ export class PlyFile {
 
     public static loadFromString(plyFile: string) {
 
-        const header = extractHeader(plyFile);
-        const body = plyFile.slice(header.length + 1);
+        let header = extractHeader(plyFile);
+        let body = plyFile.slice(header.length + 1);
         return new PlyFile(header, body);
     }
 
     public static loadFromArrayBuffer(buffer: ArrayBuffer) {
 
-        const encoder = new TextDecoder("ascii");
-        const plyFile = encoder.decode(buffer);
-        const header = extractHeader(plyFile);
-        const body = buffer.slice(header.length + 1);
+        let encoder = new TextDecoder();
+        let plyFile = encoder.decode(buffer);
+        let header = extractHeader(plyFile);
+        let body = buffer.slice(header.length + 1);
         return new PlyFile(header, body);
     }
 }
