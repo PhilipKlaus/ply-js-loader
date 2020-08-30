@@ -31,14 +31,12 @@ export class PlyProperty {
  export class PlyElement {
     private itsName: string;
     private itsCount: number;
-    //private itsProperties: PlyProperty[];
     private itsProperties: Map<string, PlyProperty>;
     private itsHasListProperty: boolean;
 
     constructor(name: string, count: number) {
         this.itsName = name,
         this.itsCount = count;
-        //this.itsProperties = [];
         this.itsProperties = new Map<string, PlyProperty>();
         this.itsHasListProperty = false;
     }
@@ -70,5 +68,5 @@ export class PlyMetadata {
     public formatEndianness: string = "little_endian";
     public formatVersion!: number;
     public comments: string[] = [];
-    public elements: PlyElement[] = [];
+    public elements: Map<string, PlyElement> = new Map<string, PlyElement>();
 }

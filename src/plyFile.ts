@@ -78,7 +78,7 @@ export class PlyFile {
         const headerLines: string[] = header.split("\n");
         
         let currentElementName = "";
-        let currentElementIndex = -1;
+        //let currentElementIndex = -1;
 
         for(let i = 0; i < headerLines.length; ++i) {
             let line = headerLines[i];    
@@ -101,9 +101,10 @@ export class PlyFile {
                     this._metadata.comments.push(lineParts.slice(1).join(" "));
                     break;
                 case "element":
-                    ++currentElementIndex;
+                   // ++currentElementIndex;
                     currentElementName = lineParts[1];
-                    this._metadata.elements.push(
+                    this._metadata.elements.set(
+                        currentElementName,
                         new PlyElement(
                             currentElementName,
                             parseInt(lineParts[2])
@@ -115,7 +116,7 @@ export class PlyFile {
                     let propertyName = lineParts[lineParts.length - 1];
                     let scalarType = lineParts[lineParts.length - 2];
                     
-                    this._metadata.elements[currentElementIndex].properties.set(
+                    (this._metadata.elements.get(currentElementName) as PlyElement).properties.set(
                         propertyName,
                         new PlyProperty(
                             propertyName,
@@ -124,7 +125,8 @@ export class PlyFile {
                             isList ? lineParts[2] : undefined,
                         )
                     );
-                    this._metadata.elements[currentElementIndex].hasListProperty = isList ? true : this._metadata.elements[currentElementIndex].hasListProperty;
+                    (this._metadata.elements.get(currentElementName) as PlyElement).hasListProperty = 
+                        isList ? true : (this._metadata.elements.get(currentElementName) as PlyElement).hasListProperty;
                     break;
                 default:
                     break;
@@ -140,18 +142,18 @@ export class PlyFile {
             }
         }
 
-        let elementIndex = -1;
         let linesToRead = 0;
-
-        let element: PlyElement = {} as PlyElement;
-        let property: PlyProperty = {} as PlyProperty;
         
         let bodySplit = (this._body as string).split("\n");
 
         let isList: boolean = false;
         let currentType: string = "";
         let oldIdx = 0;
+        
         let propertyIterator: IterableIterator<PlyProperty>;
+        let elementIterator: IterableIterator<PlyElement> = this._metadata.elements.values();
+        let element: PlyElement = {} as PlyElement;
+        let property: PlyProperty = {} as PlyProperty;
 
         for(let i = 0; i < bodySplit.length; ++i) {
 
@@ -161,14 +163,14 @@ export class PlyFile {
 
             if(linesToRead == 0) {
                 // Calculate current index etc.
-                element = this._metadata.elements[++elementIndex];
+                element = elementIterator.next().value;
                 propertyIterator = element.properties.values();
                 property = propertyIterator.next().value;
                 linesToRead = element.count;
 
                 // Prepare
                 this._elements[element.name] = {};
-                this._metadata.elements[elementIndex].properties.forEach(prop => {
+                element.properties.forEach(prop => {
                     this._elements[element.name][prop.name] = [];
                 });
             }
