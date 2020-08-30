@@ -115,7 +115,8 @@ export class PlyFile {
                     let propertyName = lineParts[lineParts.length - 1];
                     let scalarType = lineParts[lineParts.length - 2];
                     
-                    this._metadata.elements[currentElementIndex].properties.push(
+                    this._metadata.elements[currentElementIndex].properties.set(
+                        propertyName,
                         new PlyProperty(
                             propertyName,
                             scalarType,
@@ -140,7 +141,6 @@ export class PlyFile {
         }
 
         let elementIndex = -1;
-        let propertyIndex = -1;
         let linesToRead = 0;
 
         let element: PlyElement = {} as PlyElement;
@@ -151,6 +151,7 @@ export class PlyFile {
         let isList: boolean = false;
         let currentType: string = "";
         let oldIdx = 0;
+        let propertyIterator: IterableIterator<PlyProperty>;
 
         for(let i = 0; i < bodySplit.length; ++i) {
 
@@ -161,7 +162,8 @@ export class PlyFile {
             if(linesToRead == 0) {
                 // Calculate current index etc.
                 element = this._metadata.elements[++elementIndex];
-                property = element.properties[0];
+                propertyIterator = element.properties.values();
+                property = propertyIterator.next().value;
                 linesToRead = element.count;
 
                 // Prepare
@@ -171,20 +173,19 @@ export class PlyFile {
                 });
             }
 
-            propertyIndex = 0;
+            propertyIterator = element.properties.values();
             currentType = property.scalarType;
             isList = property.isList;
 
             oldIdx = 0
             for(let a = 0; a < bodySplit[i].length; ++a) {
                 if(bodySplit[i][a] == " ") {
-                    property = element.properties[propertyIndex];
+                    property = isList ? property : propertyIterator.next().value;
                     this._elements[element.name][property.name].push(Number(bodySplit[i].substring(oldIdx, a)));
-                    propertyIndex += Number(!isList);
                     oldIdx = a + 1;
                 }
                 else if(a == bodySplit[i].length-1) {
-                    property = element.properties[propertyIndex];
+                    property = propertyIterator.next().value;
                     this._elements[element.name][property.name].push(Number(bodySplit[i].substring(oldIdx, a + 1)));
                 }
               }

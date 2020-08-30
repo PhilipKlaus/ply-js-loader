@@ -1,4 +1,4 @@
-import { PlyFile, PlyElement, PlyMetadata } from "../src";
+import { PlyFile, PlyElement, PlyMetadata, PlyProperty } from "../src";
 
 const testPly: string = 
 `ply
@@ -93,9 +93,9 @@ describe("After loading a ply file a PlyFile object", function() {
       });
 
       it("have properties", function() {
-        expect(plyMetadata.elements[0].properties.length).toEqual(6);
-        expect(plyMetadata.elements[1].properties.length).toEqual(1);
-        expect(plyMetadata.elements[2].properties.length).toEqual(5);
+        expect(plyMetadata.elements[0].properties.size).toEqual(6);
+        expect(plyMetadata.elements[1].properties.size).toEqual(1);
+        expect(plyMetadata.elements[2].properties.size).toEqual(5);
       });
   
     });
@@ -103,71 +103,71 @@ describe("After loading a ply file a PlyFile object", function() {
     describe("has properties which", function() {
       
       it("have names", function() {
-        expect(plyMetadata.elements[0].properties[0].name).toEqual("x");
-        expect(plyMetadata.elements[0].properties[1].name).toEqual("y");
-        expect(plyMetadata.elements[0].properties[2].name).toEqual("z");
-        expect(plyMetadata.elements[0].properties[3].name).toEqual("red");
-        expect(plyMetadata.elements[0].properties[4].name).toEqual("green");
-        expect(plyMetadata.elements[0].properties[5].name).toEqual("blue");
+        expect((plyMetadata.elements[0].properties.get("x") as PlyProperty).name).toEqual("x");
+        expect((plyMetadata.elements[0].properties.get("y") as PlyProperty).name).toEqual("y");
+        expect((plyMetadata.elements[0].properties.get("z") as PlyProperty).name).toEqual("z");
+        expect((plyMetadata.elements[0].properties.get("red") as PlyProperty).name).toEqual("red");
+        expect((plyMetadata.elements[0].properties.get("green") as PlyProperty).name).toEqual("green");
+        expect((plyMetadata.elements[0].properties.get("blue") as PlyProperty).name).toEqual("blue");
 
-        expect(plyMetadata.elements[1].properties[0].name).toEqual("vertex_index");
+        expect((plyMetadata.elements[1].properties.get("vertex_index") as PlyProperty).name).toEqual("vertex_index");
 
-        expect(plyMetadata.elements[2].properties[0].name).toEqual("vertex1");
-        expect(plyMetadata.elements[2].properties[1].name).toEqual("vertex2");
-        expect(plyMetadata.elements[2].properties[2].name).toEqual("red");
-        expect(plyMetadata.elements[2].properties[3].name).toEqual("green");
-        expect(plyMetadata.elements[2].properties[4].name).toEqual("blue");
+        expect((plyMetadata.elements[2].properties.get("vertex1") as PlyProperty).name).toEqual("vertex1");
+        expect((plyMetadata.elements[2].properties.get("vertex2") as PlyProperty).name).toEqual("vertex2");
+        expect((plyMetadata.elements[2].properties.get("red") as PlyProperty).name).toEqual("red");
+        expect((plyMetadata.elements[2].properties.get("green") as PlyProperty).name).toEqual("green");
+        expect((plyMetadata.elements[2].properties.get("blue") as PlyProperty).name).toEqual("blue");
       });
 
       it("have scalarTypes", function() {
-        expect(plyMetadata.elements[0].properties[0].scalarType).toEqual("float");
-        expect(plyMetadata.elements[0].properties[1].scalarType).toEqual("float");
-        expect(plyMetadata.elements[0].properties[2].scalarType).toEqual("float");
-        expect(plyMetadata.elements[0].properties[3].scalarType).toEqual("uchar");
-        expect(plyMetadata.elements[0].properties[4].scalarType).toEqual("uchar");
-        expect(plyMetadata.elements[0].properties[5].scalarType).toEqual("uchar");
+        expect((plyMetadata.elements[0].properties.get("x") as PlyProperty).scalarType).toEqual("float");
+        expect((plyMetadata.elements[0].properties.get("y") as PlyProperty).scalarType).toEqual("float");
+        expect((plyMetadata.elements[0].properties.get("z") as PlyProperty).scalarType).toEqual("float");
+        expect((plyMetadata.elements[0].properties.get("red") as PlyProperty).scalarType).toEqual("uchar");
+        expect((plyMetadata.elements[0].properties.get("green") as PlyProperty).scalarType).toEqual("uchar");
+        expect((plyMetadata.elements[0].properties.get("blue") as PlyProperty).scalarType).toEqual("uchar");
 
-        expect(plyMetadata.elements[1].properties[0].scalarType).toEqual("int");
+        expect((plyMetadata.elements[1].properties.get("vertex_index") as PlyProperty).scalarType).toEqual("int");
 
-        expect(plyMetadata.elements[2].properties[0].scalarType).toEqual("int");
-        expect(plyMetadata.elements[2].properties[1].scalarType).toEqual("int");
-        expect(plyMetadata.elements[2].properties[2].scalarType).toEqual("uchar");
-        expect(plyMetadata.elements[2].properties[3].scalarType).toEqual("uchar");
-        expect(plyMetadata.elements[2].properties[4].scalarType).toEqual("uchar");
+        expect((plyMetadata.elements[2].properties.get("vertex1") as PlyProperty).scalarType).toEqual("int");
+        expect((plyMetadata.elements[2].properties.get("vertex2") as PlyProperty).scalarType).toEqual("int");
+        expect((plyMetadata.elements[2].properties.get("red") as PlyProperty).scalarType).toEqual("uchar");
+        expect((plyMetadata.elements[2].properties.get("green") as PlyProperty).scalarType).toEqual("uchar");
+        expect((plyMetadata.elements[2].properties.get("blue") as PlyProperty).scalarType).toEqual("uchar");
       });
-
+      
       it("have isList", function() {
-        expect(plyMetadata.elements[0].properties[0].isList).toEqual(false);
-        expect(plyMetadata.elements[0].properties[1].isList).toEqual(false);
-        expect(plyMetadata.elements[0].properties[2].isList).toEqual(false);
-        expect(plyMetadata.elements[0].properties[3].isList).toEqual(false);
-        expect(plyMetadata.elements[0].properties[4].isList).toEqual(false);
-        expect(plyMetadata.elements[0].properties[5].isList).toEqual(false);
+        expect((plyMetadata.elements[0].properties.get("x") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[0].properties.get("y") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[0].properties.get("z") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[0].properties.get("red") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[0].properties.get("green") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[0].properties.get("blue") as PlyProperty).isList).toEqual(false);
 
-        expect(plyMetadata.elements[1].properties[0].isList).toEqual(true);
+        expect((plyMetadata.elements[1].properties.get("vertex_index") as PlyProperty).isList).toEqual(true);
 
-        expect(plyMetadata.elements[2].properties[0].isList).toEqual(false);
-        expect(plyMetadata.elements[2].properties[1].isList).toEqual(false);
-        expect(plyMetadata.elements[2].properties[2].isList).toEqual(false);
-        expect(plyMetadata.elements[2].properties[3].isList).toEqual(false);
-        expect(plyMetadata.elements[2].properties[4].isList).toEqual(false);
+        expect((plyMetadata.elements[2].properties.get("vertex1") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[2].properties.get("vertex2") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[2].properties.get("red") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[2].properties.get("green") as PlyProperty).isList).toEqual(false);
+        expect((plyMetadata.elements[2].properties.get("blue") as PlyProperty).isList).toEqual(false);
       });
 
       it("have listSizeTypea", function() {
-        expect(plyMetadata.elements[0].properties[0].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[0].properties[1].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[0].properties[2].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[0].properties[3].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[0].properties[4].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[0].properties[5].listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[0].properties.get("x") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[0].properties.get("y") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[0].properties.get("z") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[0].properties.get("red") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[0].properties.get("green") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[0].properties.get("blue") as PlyProperty).listSizeType).toEqual(undefined);
 
-        expect(plyMetadata.elements[1].properties[0].listSizeType).toEqual("uchar");
+        expect((plyMetadata.elements[1].properties.get("vertex_index") as PlyProperty).listSizeType).toEqual("uchar");
 
-        expect(plyMetadata.elements[2].properties[0].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[2].properties[1].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[2].properties[2].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[2].properties[3].listSizeType).toEqual(undefined);
-        expect(plyMetadata.elements[2].properties[4].listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[2].properties.get("vertex1") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[2].properties.get("vertex2") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[2].properties.get("red") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[2].properties.get("green") as PlyProperty).listSizeType).toEqual(undefined);
+        expect((plyMetadata.elements[2].properties.get("blue") as PlyProperty).listSizeType).toEqual(undefined);
       });
 
     });

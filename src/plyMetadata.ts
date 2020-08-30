@@ -31,13 +31,15 @@ export class PlyProperty {
  export class PlyElement {
     private itsName: string;
     private itsCount: number;
-    private itsProperties: PlyProperty[];
+    //private itsProperties: PlyProperty[];
+    private itsProperties: Map<string, PlyProperty>;
     private itsHasListProperty: boolean;
 
     constructor(name: string, count: number) {
         this.itsName = name,
         this.itsCount = count;
-        this.itsProperties = [];
+        //this.itsProperties = [];
+        this.itsProperties = new Map<string, PlyProperty>();
         this.itsHasListProperty = false;
     }
 
@@ -49,7 +51,7 @@ export class PlyProperty {
         return this.itsCount;
     }
 
-    public get properties(): PlyProperty[] {
+    public get properties(): Map<string, PlyProperty> {
         return this.itsProperties;
     }
 
