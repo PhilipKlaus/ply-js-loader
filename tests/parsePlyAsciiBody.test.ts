@@ -62,12 +62,23 @@ describe("Calling parsePlyBody", function() {
         beforeEach(function() {
             result = plyFile.parsePlyBody({
                 "vertex": {
-                    "vertices": ["x", "y", "z"],
-                    "colors": ["red", "green", "blue"]
+                    "vertices": {
+                        propertyNames: ["x", "y", "z"],
+                    },
+                    "colors": {
+                        propertyNames: ["red", "green", "blue"],
+                        propertyFunction: (x: number) => {
+                            return x / 255.0;
+                        }
+                    }
                 },
                 "edge": {
-                    "edgeColor": ["red", "green", "blue"],
-                    "mix": ["red", "vertex2", "vertex1"]
+                    "edgeColor": {
+                        propertyNames: ["red", "green", "blue"]
+                    },
+                    "mix": {
+                        propertyNames: ["red", "vertex2", "vertex1"]
+                    }
                 }
             });
             expect(result).toBeDefined();
@@ -91,14 +102,14 @@ describe("Calling parsePlyBody", function() {
             expect((result as PlyParsingResult).colors).toBeDefined();
             expect((result as PlyParsingResult).colors).toEqual(
                 [
-                    255, 0, 0,
-                    255, 0, 0,
-                    255, 0, 0,
-                    255, 0, 0,
-                    0, 0, 255,
-                    0, 0, 255,
-                    0, 0, 255,
-                    0, 0, 255
+                    1.0, 0, 0,
+                    1.0, 0, 0,
+                    1.0, 0, 0,
+                    1.0, 0, 0,
+                    0, 0, 1.0,
+                    0, 0, 1.0,
+                    0, 0, 1.0,
+                    0, 0, 1.0
                 ]
             );
 

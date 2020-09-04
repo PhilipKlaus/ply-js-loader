@@ -2,7 +2,10 @@ import { PlyMetadata, PlyProperty, PlyElement } from "./plyMetadata";
 
 export interface ParsingConfiguration {
     [element: string]: {
-        [configName: string]: string[]
+        [configName: string]: {
+            propertyNames: string[],
+            propertyFunction?: ((n: number) => number)
+        }
     }
 }
 
@@ -136,6 +139,21 @@ export class PlyFile {
         return resultBuffer;
     }
 
+    private addToResultBuffer(configuration: ParsingConfiguration, result: PlyParsingResult, element: PlyElement) {
+        for (let config in configuration[element.name]) {
+            configuration[element.name][config].propertyNames.forEach(prop => {
+                let lastElement = (element.properties.get(prop) as PlyProperty).buffer.length - 1;
+                let value = (element.properties.get(prop) as PlyProperty).buffer[lastElement];
+                let propertyFunction = configuration[element.name][config].propertyFunction;
+
+                if(propertyFunction !== undefined) {
+                    value = propertyFunction(value);
+                }
+                result[config].push(value);
+            }); 
+        }
+    }
+
     public parsePlyBody(configuration: ParsingConfiguration = {}): PlyParsingResult | void {
         if(this.itsMetadata.format === "ascii") {
             return this.parsePlyAsciiBody(configuration);
@@ -186,13 +204,8 @@ export class PlyFile {
                 }
               }
 
-            if(!currentProperty.isList && currentElement.name in configuration) {
-                for (let config in configuration[currentElement.name]) {
-                    configuration[currentElement.name][config].forEach(prop => {
-                        let lastElement = (currentElement.properties.get(prop) as PlyProperty).buffer.length - 1;
-                        resultBuffer[config].push((currentElement.properties.get(prop) as PlyProperty).buffer[lastElement]);
-                    }); 
-                }
+            if(currentElement.name in configuration) {
+                this.addToResultBuffer(configuration, resultBuffer, currentElement);
             }
             --linesToRead;
         }
@@ -236,12 +249,7 @@ export class PlyFile {
                         }
                     )
                     if(element.name in configuration) {
-                        for (let config in configuration[element.name]) {
-                            configuration[element.name][config].forEach(prop => {
-                                let lastElement = (element.properties.get(prop) as PlyProperty).buffer.length - 1;
-                                resultBuffer[config].push((element.properties.get(prop) as PlyProperty).buffer[lastElement]);
-                            }); 
-                        }
+                        this.addToResultBuffer(configuration, resultBuffer, element);
                     }
                 }
             }
