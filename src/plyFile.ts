@@ -20,20 +20,38 @@ function extractHeader(plyFile: string): string {
     return headerString;
 }
 
-function getByteSizeFromType(type: string) {
+interface ITypeByteSizeMap {
+    [type: string]: number
+}
+let TypeByteSizeMap = {
+    "char": 1,
+    "uchar": 1,
+    "short": 2,
+    "ushort": 2,
+    "int": 4,
+    "uint4": 4,
+    "float": 4,
+    "double": 8
+} as ITypeByteSizeMap;
+
+function readBinary(dataView: DataView, type: string, byteOffset: number, littleEndian: boolean) {
     switch(type) {
         case "char":
+            return dataView.getInt8(byteOffset);
         case "uchar":
-            return 1;
+            return dataView.getUint8(byteOffset);
         case "short":
+            return dataView.getInt16(byteOffset, littleEndian);
         case "ushort":
-            return 2;
+            return dataView.getUint16(byteOffset, littleEndian);
         case "int":
+            return dataView.getInt32(byteOffset, littleEndian);
         case "uint":
+            return dataView.getUint32(byteOffset, littleEndian);
         case "float":
-            return 4;
+            return dataView.getFloat32(byteOffset, littleEndian);
         case "double":
-            return 8;
+            return dataView.getFloat64(byteOffset, littleEndian);
         default:
             return 0
     };
@@ -185,7 +203,53 @@ export class PlyFile {
     }
 
     private parsePlyBinaryBody(configuration: ParsingConfiguration = {}): PlyParsingResult | void {
-        
+        let resultBuffer:PlyParsingResult = this.prepareResultBuffer(configuration);
+        let byteOffset = 0;
+
+        let dataView = new DataView((this.itsBody as ArrayBuffer));
+        let isLittleEndian = this.metadata.formatEndianness === "little_endian";
+        let byteSize = 0;
+        let listSizeByteSize = 0;
+        let listAmount = 0;
+
+        this.metadata.elements.forEach(
+            (element, elementName) => {
+                for(let i = 0; i < element.count; ++i) {
+                    element.properties.forEach(
+                        (property, propertyName) => {
+                            
+                            byteSize = TypeByteSizeMap[property.scalarType];
+
+                            if(!property.isList) {
+                                property.buffer.push(readBinary(dataView, property.scalarType, byteOffset, isLittleEndian));
+                                byteOffset += byteSize;
+                            }
+                            else {
+                                listSizeByteSize = TypeByteSizeMap[property.listSizeType as string];
+                                listAmount = readBinary(dataView, property.listSizeType as string, byteOffset, isLittleEndian)
+                                byteOffset += listSizeByteSize;
+                                for(let u = 0; u < listAmount; ++u) {
+                                    property.buffer.push(readBinary(dataView, property.scalarType, byteOffset, isLittleEndian));
+                                    byteOffset += byteSize;
+                                }
+                            }
+                        }
+                    )
+                    if(element.name in configuration) {
+                        for (let config in configuration[element.name]) {
+                            configuration[element.name][config].forEach(prop => {
+                                let lastElement = (element.properties.get(prop) as PlyProperty).buffer.length - 1;
+                                resultBuffer[config].push((element.properties.get(prop) as PlyProperty).buffer[lastElement]);
+                            }); 
+                        }
+                    }
+                }
+            }
+        )
+
+        if(Object.keys(resultBuffer).length !== 0) {
+            return resultBuffer;
+        }
     }
 
     get metadata(): PlyMetadata {
@@ -199,8 +263,17 @@ export class PlyFile {
         return new PlyFile(header, body);
     }
 
-    public static loadFromArrayBuffer(buffer: ArrayBuffer) {
 
+    private toArrayBuffer(buffer: Buffer) {
+        var ab = new ArrayBuffer(buffer.length);
+        var view = new Uint8Array(ab);
+        for (var i = 0; i < buffer.length; ++i) {
+            view[i] = buffer[i];
+        }
+        return ab;
+    }
+
+    public static loadFromArrayBuffer(buffer: ArrayBuffer) {
         let encoder = new TextDecoder();
         let plyFile = encoder.decode(buffer);
         let header = extractHeader(plyFile);
