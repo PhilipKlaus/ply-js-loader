@@ -25,7 +25,7 @@ export class PlyProperty {
 
 export class PlyElement {
   private itsProperties: Map<string, PlyProperty>;
-  constructor(public name: string, public propertyAmount: number) {
+  constructor(public name: string, public amount: number) {
     this.itsProperties = new Map<string, PlyProperty>();
   }
 

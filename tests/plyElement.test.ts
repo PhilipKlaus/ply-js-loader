@@ -11,7 +11,7 @@ describe("A PlyElement should", () => {
   });
 
   it("return its property amount", () => {
-    expect(element.propertyAmount).toEqual(3);
+    expect(element.amount).toEqual(3);
   });
 
   it("store PlyProperties", () => {
