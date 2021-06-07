@@ -25,19 +25,4 @@ export class PlyElement {
   public hasProperty(property: string): boolean {
     return this.properyNames().includes(property);
   }
-
-  public parseAscii(data: string) {
-    const parts = data.split(" ");
-    let i = 0;
-    for (const [key, prop] of this.itsProperties.entries()) {
-      if (prop.isListProperty()) {
-        const list_len = Number(parts[i++]);
-        for (let j = 0; j < list_len; ++j) {
-          prop.readAscii(parts[i++]);
-        }
-      } else {
-        prop.readAscii(parts[i++]);
-      }
-    }
-  }
 }

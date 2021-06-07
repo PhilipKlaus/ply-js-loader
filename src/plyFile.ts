@@ -1,5 +1,6 @@
 import { PlyElement, PlyProperty } from ".";
 import { ByteSizes } from "./plyProperty";
+import { copyAscii, copyBinary, getListLength } from "./tools";
 
 export class PlyFormat {
   constructor(
@@ -157,10 +158,10 @@ export class PlyFile {
           if (prop.isListProperty()) {
             const len = Number(values[valueIdx++]);
             for (let j = 0; j < len; ++j) {
-              prop.readAscii(values[valueIdx++]);
+              copyAscii(prop, values[valueIdx++]);
             }
           } else {
-            prop.readAscii(values[valueIdx++]);
+            copyAscii(prop, values[valueIdx++]);
           }
         });
         ++lineIdx;
@@ -176,14 +177,14 @@ export class PlyFile {
         e.properyNames().forEach((p) => {
           const prop = e.getProperty(p);
           if (prop.isListProperty()) {
-            const len = prop.extractListLength(dataView, byteOffset);
+            const len = getListLength(prop, dataView, byteOffset);
             byteOffset += ByteSizes.get(prop.listType as string) as number;
             for (let j = 0; j < len; ++j) {
-              prop.readBinary(dataView, byteOffset, this.isLittleEndian());
+              copyBinary(prop, dataView, byteOffset, this.isLittleEndian());
               byteOffset += ByteSizes.get(prop.scalarType) as number;
             }
           } else {
-            prop.readBinary(dataView, byteOffset, this.isLittleEndian());
+            copyBinary(prop, dataView, byteOffset, this.isLittleEndian());
             byteOffset += ByteSizes.get(prop.scalarType) as number;
           }
         });

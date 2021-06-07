@@ -28,19 +28,6 @@ describe("A PlyElement should", () => {
     expect(element.properyNames()).toEqual(["x", "y", "z"]);
   });
 
-  it("parse an ascii property line", () => {
-    element.addProperty(new PlyProperty("prop1", "float"));
-    element.addProperty(new PlyProperty("prop2", "int", "uchar"));
-    element.addProperty(new PlyProperty("prop3", "uchar"));
-
-    element.parseAscii("1.0 3 1 2 3 10");
-    element.parseAscii("10.0 2 10 20 100");
-
-    expect(element.getProperty("prop1").getData()).toEqual([1.0, 10.0]);
-    expect(element.getProperty("prop2").getData()).toEqual([1, 2, 3, 10, 20]);
-    expect(element.getProperty("prop3").getData()).toEqual([10, 100]);
-  });
-
   /*element.addProperty("x", new PlyProperty("x", "float", false));
   element.addProperty("y", new PlyProperty("y", "float", false));
   element.addProperty("z", new PlyProperty("z", "float", false));
