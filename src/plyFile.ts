@@ -47,16 +47,6 @@ export class PlyFile {
     }
   }
 
-  public static extractHeader(ply: string): string {
-    let endHeaderIndex: number = ply.lastIndexOf("end_header");
-    if (endHeaderIndex === -1) {
-      throw "Invalid PLY file: end_header not present";
-    }
-    endHeaderIndex += "end_header".length;
-    const headerString: string = ply.slice(0, endHeaderIndex);
-    return headerString;
-  }
-
   public getElement(element: string): PlyElement {
     if (!this.hasElement(element)) {
       throw Error(`Element ${element} not found`);
@@ -73,6 +63,16 @@ export class PlyFile {
   }
 
   // ------------ Private methods ------------
+
+  private static extractHeader(ply: string): string {
+    let endHeaderIndex: number = ply.lastIndexOf("end_header");
+    if (endHeaderIndex === -1) {
+      throw "Invalid PLY file: end_header not present";
+    }
+    endHeaderIndex += "end_header".length;
+    const headerString: string = ply.slice(0, endHeaderIndex);
+    return headerString;
+  }
 
   private parseComment(lineParts: string[]) {
     this.comments.push(lineParts.slice(1).join(" "));

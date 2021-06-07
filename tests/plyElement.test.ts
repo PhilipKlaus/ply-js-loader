@@ -28,18 +28,13 @@ describe("A PlyElement should", () => {
     expect(element.properyNames()).toEqual(["x", "y", "z"]);
   });
 
-  /*element.addProperty("x", new PlyProperty("x", "float", false));
-  element.addProperty("y", new PlyProperty("y", "float", false));
-  element.addProperty("z", new PlyProperty("z", "float", false));
-
-  it("return property names", () => {
-    expect(element.properyNames()).toEqual(["x", "y", "z"]);
+  it("throw an Error when getProperty is called with an invalid property name", () => {
+    element.addProperty(new PlyProperty("x", "float"));
+    expect(() => {
+      element.getProperty("x");
+    }).not.toThrow();
+    expect(() => {
+      element.getProperty("invalid");
+    }).toThrow();
   });
-
-  it("have correct properties", () => {
-    expect(element.hasProperty("x")).toBeTrue();
-    expect(element.hasProperty("y")).toBeTrue();
-    expect(element.hasProperty("z")).toBeTrue();
-    expect(element.hasProperty("foo")).toBeFalse();
-  });*/
 });

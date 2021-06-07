@@ -42,11 +42,4 @@ describe("A PlyProperty should", () => {
     property.getDataCopy()[0] = 4;
     expect(property.getData()).toEqual([1, 2, 3]);
   });
-
-  it("read ascii data", () => {
-    /*property.readAscii("100.5");
-    property.readAscii("200.5");
-    property.readAscii("300.5");
-    expect(property.getData()).toEqual([100.5, 200.5, 300.5]);*/
-  });
 });
