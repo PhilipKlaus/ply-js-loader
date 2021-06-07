@@ -1,3 +1,14 @@
+export const ByteSizes: Map<string, number> = new Map([
+  ["char", 1],
+  ["uchar", 1],
+  ["short", 2],
+  ["ushort", 2],
+  ["int", 4],
+  ["uint4", 4],
+  ["float", 4],
+  ["double", 8],
+]);
+
 export class PlyProperty {
   public itsData: Array<number> = new Array();
   constructor(
@@ -16,6 +27,56 @@ export class PlyProperty {
 
   public readAscii(value: string) {
     this.itsData.push(Number(value));
+  }
+
+  public readBinary(
+    dataView: DataView,
+    byteOffset: number,
+    littleEndian: boolean
+  ) {
+    const parsed = this.extractBinary(
+      this.scalarType,
+      dataView,
+      byteOffset,
+      littleEndian
+    );
+    this.itsData.push(parsed);
+  }
+
+  public extractListLength(dataView: DataView, byteOffset: number): number {
+    if (this.listType) {
+      return this.extractBinary(this.listType, dataView, byteOffset, true);
+    }
+    throw Error("Property is not a list");
+  }
+
+  private extractBinary(
+    type: string,
+    dataView: DataView,
+    byteOffset: number,
+    littleEndian: boolean = true
+  ) {
+    switch (type) {
+      case "char":
+        return dataView.getInt8(byteOffset);
+      case "uchar":
+        return dataView.getUint8(byteOffset);
+      case "short":
+        return dataView.getInt16(byteOffset, littleEndian);
+      case "ushort":
+        return dataView.getUint16(byteOffset, littleEndian);
+      case "int":
+        return dataView.getInt32(byteOffset, littleEndian);
+      case "uint":
+        return dataView.getUint32(byteOffset, littleEndian);
+      case "float":
+        return dataView.getFloat32(byteOffset, littleEndian);
+      case "double":
+        return dataView.getFloat64(byteOffset, littleEndian);
+      default:
+        return 0;
+      // do nothing
+    }
   }
 
   public isListProperty(): boolean {
@@ -64,133 +125,3 @@ export class PlyElement {
     }
   }
 }
-
-/*export class PlyProperty<Type> {
-  constructor(
-    public name: string,
-    public scalarType: string,
-    public isList: boolean,
-    public data: Array<Type>,
-    public listSizeType?: string
-  ) {}
-}
-
-export class PlyElement {
-  private itsProperties: Map<string, PlyProperty>;
-
-  constructor(public name: string, public count: number) {
-    this.itsProperties = new Map<string, PlyProperty>();
-  }
-
-  public addProperty<Type>(key: string, prop: PlyProperty<Type>) {
-    this.itsProperties.set(key, prop);
-  }
-
-  public properyNames(): Array<string> {
-    return Array.from(this.itsProperties.keys());
-  }
-
-  public hasProperty(property: string): boolean {
-    return this.properyNames().includes(property);
-  }
-}
-
-export class PlyFormat {
-  constructor(
-    public format: string,
-    public endianness: string,
-    public version: string
-  ) {}
-}
-
-export class PlyHeader {
-  public comments: Array<string>;
-  public format!: PlyFormat;
-  public elements: Map<string, PlyElement>;
-
-  private currentElement: string;
-
-  constructor(private header: string) {
-    this.comments = new Array<string>();
-    this.currentElement = "";
-    this.elements = new Map<string, PlyElement>();
-
-    this.parseHeader();
-  }
-
-  private parseComment(lineParts: string[]) {
-    this.comments.push(lineParts.slice(1).join(" "));
-  }
-
-  private parseFormat(lineParts: string[]) {
-    const formatParts = lineParts[1].split("_");
-    let format = formatParts[0];
-    let endianness = "";
-    if (formatParts.length > 1) {
-      endianness = formatParts.slice(1).join("_");
-    }
-    let version = lineParts[2];
-    this.format = new PlyFormat(format, endianness, version);
-  }
-
-  private parseElement(lineParts: string[]) {
-    this.currentElement = lineParts[1];
-    this.elements.set(
-      this.currentElement,
-      new PlyElement(this.currentElement, parseInt(lineParts[2]))
-    );
-  }
-
-  private parseProperty(lineParts: string[]) {
-    let isList = lineParts[1] == "list";
-    let propertyName = lineParts[lineParts.length - 1];
-    let scalarType = lineParts[lineParts.length - 2];
-
-    this.elements
-      .get(this.currentElement)
-      ?.addProperty(
-        propertyName,
-        new PlyProperty(
-          propertyName,
-          scalarType,
-          isList,
-          isList ? lineParts[2] : undefined
-        )
-      );
-  }
-
-  private parseHeader() {
-    const headerLines: string[] = this.header.split("\n");
-
-    headerLines.forEach((line) => {
-      if (line) {
-        const lineParts = line.trim().split(/\s+/);
-        const keyword = lineParts[0];
-
-        switch (keyword) {
-          case "ply":
-            // Do nothing
-            break;
-          case "end_header":
-            // Do nothing
-            break;
-          case "comment":
-            this.parseComment(lineParts);
-            break;
-          case "format":
-            this.parseFormat(lineParts);
-            break;
-          case "element":
-            this.parseElement(lineParts);
-            break;
-          case "property":
-            this.parseProperty(lineParts);
-            break;
-          default:
-            throw Error(`invalid header keyword ${keyword}`);
-        }
-      }
-    });
-  }
-}
-*/

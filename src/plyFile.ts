@@ -1,4 +1,4 @@
-import { PlyElement, PlyProperty } from "./plyMetadata";
+import { ByteSizes, PlyElement, PlyProperty } from "./plyMetadata";
 
 export class PlyFormat {
   constructor(
@@ -33,7 +33,12 @@ export class PlyFile {
         const body = ply.slice(header.length + 1);
         this.parseAsciiBody(body);
       } else {
-        throw Error("Not implemented");
+        const encoder = new TextDecoder();
+        const plyFile = encoder.decode(ply);
+        const header = this.extractHeader(plyFile);
+        this.parseHeader(header);
+        const body = ply.slice(header.length + 1);
+        this.parseBinaryBody(body);
       }
     } else {
       // Empty Ply file is created
@@ -131,6 +136,10 @@ export class PlyFile {
     });
   }
 
+  private isLittleEndian(): boolean {
+    return this.format.endianness == "little_endian";
+  }
+
   private parseAsciiBody(body: string) {
     let bodySplit = body.split("\n");
     let lineIdx = 0;
@@ -156,59 +165,26 @@ export class PlyFile {
     });
   }
 
-  /*private parseAsciiElement(
-    element: PlyElement,
-    name: string,
-    map: Map<string, PlyElement>
-  ) {} */
-
-  /*public static fromString(raw: string): PlyFile {
-    const ply = new PlyFile();
-    this.parseHeader(raw, ply);
-    return ply;
-  }
-
-  private extractHeader(plyFile: string): string {
-    let endHeaderIndex: number = plyFile.lastIndexOf("end_header");
-    if(endHeaderIndex === -1) {
-        throw "Invalid PLY file: end_header not present";
-    }
-    endHeaderIndex += "end_header".length;
-    const headerString: string = plyFile.slice(0, endHeaderIndex);
-    return headerString;
-  }*/
-}
-/*import { PlyFormat, PlyHeader, PlyElement } from "./plyMetadata";
-
-export abstract class Ply {
-  private itsHeader: PlyHeader;
-
-  constructor(header: string) {
-    this.itsHeader = new PlyHeader(header);
-  }
-
-  public comments(): Array<string> {
-    return this.itsHeader.comments;
-  }
-
-  public format(): PlyFormat {
-    return this.itsHeader.format;
-  }
-
-  public elementNames(): Array<string> {
-    return Array.from(this.itsHeader.elements.keys());
-  }
-
-  public hasElement(element: string): boolean {
-    return this.elementNames().includes(element);
-  }
-
-  public getElement(element: string): PlyElement {
-    let e = this.itsHeader.elements.get(element);
-    if (e) {
-      return e;
-    }
-    throw Error(`Element ${element} is not existing`);
+  private parseBinaryBody(body: ArrayBuffer) {
+    let byteOffset = 0;
+    const dataView = new DataView(body);
+    this.elements.forEach((e, _, __) => {
+      for (let i = 0; i < e.amount; ++i) {
+        e.properyNames().forEach((p) => {
+          const prop = e.getProperty(p);
+          if (prop.isListProperty()) {
+            const len = prop.extractListLength(dataView, byteOffset);
+            byteOffset += ByteSizes.get(prop.listType as string) as number;
+            for (let j = 0; j < len; ++j) {
+              prop.readBinary(dataView, byteOffset, this.isLittleEndian());
+              byteOffset += ByteSizes.get(prop.scalarType) as number;
+            }
+          } else {
+            prop.readBinary(dataView, byteOffset, this.isLittleEndian());
+            byteOffset += ByteSizes.get(prop.scalarType) as number;
+          }
+        });
+      }
+    });
   }
 }
-*/
