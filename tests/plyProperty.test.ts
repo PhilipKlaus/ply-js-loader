@@ -8,11 +8,11 @@ describe("A PlyProperty should", () => {
   });
 
   it("return its name", () => {
-    expect(property.name).toEqual("x");
+    expect(property.getName()).toEqual("x");
   });
 
   it("return its scalar type", () => {
-    expect(property.scalarType).toEqual("float");
+    expect(property.getType()).toEqual("float");
   });
 
   it("return false when calling isListProperty", () => {
@@ -20,9 +20,11 @@ describe("A PlyProperty should", () => {
     expect(new PlyProperty("x", "float", "int").isListProperty()).toBeTrue();
   });
 
-  it("return its list type", () => {
-    expect(property.listType).toBeUndefined;
-    expect(new PlyProperty("x", "float", "int").listType).toEqual("int");
+  it("return its list length type", () => {
+    expect(property.getListLenType()).toBeUndefined;
+    expect(new PlyProperty("x", "float", "int").getListLenType()).toEqual(
+      "int"
+    );
   });
 
   it("return empty data after instantiating", () => {

@@ -1,5 +1,16 @@
 import { PlyProperty } from ".";
 
+export const ByteSizes: Map<string, number> = new Map([
+  ["char", 1],
+  ["uchar", 1],
+  ["short", 2],
+  ["ushort", 2],
+  ["int", 4],
+  ["uint4", 4],
+  ["float", 4],
+  ["double", 8],
+]);
+
 export function extractBinary(
   type: string,
   dataView: DataView,
@@ -39,7 +50,7 @@ export function copyBinary(
   littleEndian: boolean
 ) {
   const parsed = extractBinary(
-    property.scalarType,
+    property.getType(),
     dataView,
     byteOffset,
     littleEndian
@@ -52,8 +63,9 @@ export function getListLength(
   dataView: DataView,
   byteOffset: number
 ): number {
-  if (property.listType) {
-    return extractBinary(property.listType, dataView, byteOffset, true);
+  const listLenType = property.getListLenType();
+  if (listLenType) {
+    return extractBinary(listLenType, dataView, byteOffset, true);
   }
   throw Error("Property is not a list");
 }

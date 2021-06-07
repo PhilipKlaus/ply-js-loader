@@ -7,7 +7,7 @@ export class PlyElement {
   }
 
   public addProperty(property: PlyProperty) {
-    this.itsProperties.set(property.name, property);
+    this.itsProperties.set(property.getName(), property);
   }
 
   public getProperty(propertyName: string): PlyProperty {

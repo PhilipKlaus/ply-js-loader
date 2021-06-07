@@ -1,21 +1,26 @@
-export const ByteSizes: Map<string, number> = new Map([
-  ["char", 1],
-  ["uchar", 1],
-  ["short", 2],
-  ["ushort", 2],
-  ["int", 4],
-  ["uint4", 4],
-  ["float", 4],
-  ["double", 8],
-]);
-
 export class PlyProperty {
-  public itsData: Array<number> = new Array();
-  constructor(
-    public name: string,
-    public scalarType: string,
-    public listType?: string
-  ) {}
+  private itsData: Array<number> = new Array();
+  private itsName: string;
+  private itsType: string;
+  private itsListLenType: string | undefined;
+
+  constructor(name: string, scalarType: string, listType?: string) {
+    this.itsName = name;
+    this.itsType = scalarType;
+    this.itsListLenType = listType;
+  }
+
+  public getName(): string {
+    return this.itsName;
+  }
+
+  public getType(): string {
+    return this.itsType;
+  }
+
+  public getListLenType(): string | undefined {
+    return this.itsListLenType;
+  }
 
   public getData(): Array<number> {
     return this.itsData;
@@ -30,6 +35,6 @@ export class PlyProperty {
   }
 
   public isListProperty(): boolean {
-    return this.listType != undefined;
+    return this.itsListLenType != undefined;
   }
 }
