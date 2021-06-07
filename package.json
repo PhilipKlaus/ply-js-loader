@@ -10,7 +10,7 @@
     "prettier-format": "prettier --config .prettierrc src/**/*.ts tests/**/*.ts --write",
     "prettier-watch": "onchange src/**/*.ts tests/**/*.ts -- prettier --write {{changed}}",
     "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
-    "coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test"
+    "coverage": "nyc -r text -e .ts npm run test"
   },
   "prepublish": "tsc",
   "repository": {
