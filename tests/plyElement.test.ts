@@ -7,11 +7,11 @@ describe("A PlyElement should", () => {
   });
 
   it("return its name", () => {
-    expect(element.name).toEqual("vertex");
+    expect(element.getName()).toEqual("vertex");
   });
 
   it("return its property amount", () => {
-    expect(element.amount).toEqual(3);
+    expect(element.getAmount()).toEqual(3);
   });
 
   it("store PlyProperties", () => {

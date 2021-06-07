@@ -148,7 +148,7 @@ export class PlyFile {
     let lineIdx = 0;
 
     this.elements.forEach((e, _, __) => {
-      for (let i = 0; i < e.amount; ++i) {
+      for (let i = 0; i < e.getAmount(); ++i) {
         const line = bodySplit[lineIdx];
         const values = line.trim().split(/\s+/);
         let valueIdx = 0;
@@ -172,7 +172,7 @@ export class PlyFile {
     let byteOffset = 0;
     const dataView = new DataView(body);
     this.elements.forEach((e, _, __) => {
-      for (let i = 0; i < e.amount; ++i) {
+      for (let i = 0; i < e.getAmount(); ++i) {
         e.properyNames().forEach((p) => {
           const prop = e.getProperty(p);
           if (prop.isListProperty()) {

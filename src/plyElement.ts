@@ -2,8 +2,21 @@ import { PlyProperty } from ".";
 
 export class PlyElement {
   private itsProperties: Map<string, PlyProperty>;
-  constructor(public name: string, public amount: number) {
+  private itsName: string;
+  private itsAmount: number;
+
+  constructor(name: string, amount: number) {
     this.itsProperties = new Map<string, PlyProperty>();
+    this.itsName = name;
+    this.itsAmount = amount;
+  }
+
+  public getName(): string {
+    return this.itsName;
+  }
+
+  public getAmount(): number {
+    return this.itsAmount;
   }
 
   public addProperty(property: PlyProperty) {
