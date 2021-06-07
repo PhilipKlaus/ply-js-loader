@@ -1,5 +1,5 @@
-import { PlyFile, PlyFormat } from "../src/plyFile";
-import { PlyElement } from "../src/plyMetadata";
+import { PlyElement, PlyFile } from "../src";
+import { PlyFormat } from "../src/plyFile";
 import { testPly } from "./testply";
 
 describe("A PlyFile created from a string should", () => {
@@ -94,26 +94,32 @@ describe("A PlyFile created from a string should", () => {
       });
 
       it("which return numerical data", () => {
-        expect(vertex.getProperty("x").data).toEqual([0, 0, 0, 0, 1, 1, 1, 1]);
-        expect(vertex.getProperty("y").data).toEqual([0, 0, 1, 1, 0, 0, 1, 1]);
-        expect(vertex.getProperty("z").data).toEqual([0, 1, 1, 0, 0, 1, 1, 0]);
-        expect(vertex.getProperty("red").data).toEqual([
+        expect(vertex.getProperty("x").getData()).toEqual([
+          0, 0, 0, 0, 1, 1, 1, 1,
+        ]);
+        expect(vertex.getProperty("y").getData()).toEqual([
+          0, 0, 1, 1, 0, 0, 1, 1,
+        ]);
+        expect(vertex.getProperty("z").getData()).toEqual([
+          0, 1, 1, 0, 0, 1, 1, 0,
+        ]);
+        expect(vertex.getProperty("red").getData()).toEqual([
           255, 255, 255, 255, 0, 0, 0, 0,
         ]);
-        expect(vertex.getProperty("green").data).toEqual([
+        expect(vertex.getProperty("green").getData()).toEqual([
           0, 0, 0, 0, 0, 0, 0, 0,
         ]);
-        expect(vertex.getProperty("blue").data).toEqual([
+        expect(vertex.getProperty("blue").getData()).toEqual([
           0, 0, 0, 0, 255, 255, 255, 255,
         ]);
 
-        expect(face.getProperty("vertex_index").data).toEqual([
+        expect(face.getProperty("vertex_index").getData()).toEqual([
           0, 1, 2, 0, 2, 3, 7, 6, 5, 4, 0, 4, 5, 1, 1, 5, 6, 2, 2, 6, 7, 3, 3,
           7, 4, 0,
         ]);
 
-        expect(edge.getProperty("vertex1").data).toEqual([0, 1, 2, 3, 2]);
-        expect(edge.getProperty("vertex2").data).toEqual([1, 2, 3, 0, 0]);
+        expect(edge.getProperty("vertex1").getData()).toEqual([0, 1, 2, 3, 2]);
+        expect(edge.getProperty("vertex2").getData()).toEqual([1, 2, 3, 0, 0]);
       });
     });
   });

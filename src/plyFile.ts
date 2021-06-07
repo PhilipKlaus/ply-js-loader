@@ -1,4 +1,5 @@
-import { ByteSizes, PlyElement, PlyProperty } from "./plyMetadata";
+import { PlyElement, PlyProperty } from ".";
+import { ByteSizes } from "./plyProperty";
 
 export class PlyFormat {
   constructor(
@@ -28,14 +29,14 @@ export class PlyFile {
 
     if (ply) {
       if (typeof ply === "string") {
-        const header = this.extractHeader(ply);
+        const header = PlyFile.extractHeader(ply);
         this.parseHeader(header);
         const body = ply.slice(header.length + 1);
         this.parseAsciiBody(body);
       } else {
         const encoder = new TextDecoder();
         const plyFile = encoder.decode(ply);
-        const header = this.extractHeader(plyFile);
+        const header = PlyFile.extractHeader(plyFile);
         this.parseHeader(header);
         const body = ply.slice(header.length + 1);
         this.parseBinaryBody(body);
@@ -43,6 +44,16 @@ export class PlyFile {
     } else {
       // Empty Ply file is created
     }
+  }
+
+  public static extractHeader(ply: string): string {
+    let endHeaderIndex: number = ply.lastIndexOf("end_header");
+    if (endHeaderIndex === -1) {
+      throw "Invalid PLY file: end_header not present";
+    }
+    endHeaderIndex += "end_header".length;
+    const headerString: string = ply.slice(0, endHeaderIndex);
+    return headerString;
   }
 
   public getElement(element: string): PlyElement {
@@ -60,15 +71,7 @@ export class PlyFile {
     return this.elementNames().includes(element);
   }
 
-  private extractHeader(ply: string): string {
-    let endHeaderIndex: number = ply.lastIndexOf("end_header");
-    if (endHeaderIndex === -1) {
-      throw "Invalid PLY file: end_header not present";
-    }
-    endHeaderIndex += "end_header".length;
-    const headerString: string = ply.slice(0, endHeaderIndex);
-    return headerString;
-  }
+  // ------------ Private methods ------------
 
   private parseComment(lineParts: string[]) {
     this.comments.push(lineParts.slice(1).join(" "));

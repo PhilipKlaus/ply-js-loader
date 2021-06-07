@@ -1,4 +1,4 @@
-import { PlyElement, PlyProperty } from "../src/plyMetadata";
+import { PlyElement, PlyProperty } from "../src";
 
 describe("A PlyElement should", () => {
   let element: PlyElement;
@@ -36,9 +36,9 @@ describe("A PlyElement should", () => {
     element.parseAscii("1.0 3 1 2 3 10");
     element.parseAscii("10.0 2 10 20 100");
 
-    expect(element.getProperty("prop1").data).toEqual([1.0, 10.0]);
-    expect(element.getProperty("prop2").data).toEqual([1, 2, 3, 10, 20]);
-    expect(element.getProperty("prop3").data).toEqual([10, 100]);
+    expect(element.getProperty("prop1").getData()).toEqual([1.0, 10.0]);
+    expect(element.getProperty("prop2").getData()).toEqual([1, 2, 3, 10, 20]);
+    expect(element.getProperty("prop3").getData()).toEqual([10, 100]);
   });
 
   /*element.addProperty("x", new PlyProperty("x", "float", false));
@@ -56,135 +56,3 @@ describe("A PlyElement should", () => {
     expect(element.hasProperty("foo")).toBeFalse();
   });*/
 });
-
-/*import * as ply from "../src";
-import { PlyElement, PlyProperty } from "../src/plyMetadata";
-
-describe("A PlyElement should", () => {
-  let element = new PlyElement("vertex", 3);
-  element.addProperty("x", new PlyProperty("x", "float", false));
-  element.addProperty("y", new PlyProperty("y", "float", false));
-  element.addProperty("z", new PlyProperty("z", "float", false));
-
-  it("return property names", () => {
-    expect(element.properyNames()).toEqual(["x", "y", "z"]);
-  });
-
-  it("have correct properties", () => {
-    expect(element.hasProperty("x")).toBeTrue();
-    expect(element.hasProperty("y")).toBeTrue();
-    expect(element.hasProperty("z")).toBeTrue();
-    expect(element.hasProperty("foo")).toBeFalse();
-  });
-});
-*/
-/*
-const testPly: string = `ply
-format ascii 1.0
-comment author: Greg Turk
-comment object: another cube
-element vertex 8
-property float x
-property float y
-property float z
-property uchar red
-property uchar green
-property uchar blue
-element face 7
-property list uchar int vertex_index
-element edge 5
-property int vertex1
-property int vertex2
-property uchar red
-property uchar green
-property uchar blue
-end_header
-0 0 0 255 0 0
-0 0 1 255 0 0
-0 1 1 255 0 0
-0 1 0 255 0 0
-1 0 0 0 0 255
-1 0 1 0 0 255
-1 1 1 0 0 255
-1 1 0 0 0 255
-3 0 1 2
-3 0 2 3
-4 7 6 5 4
-4 0 4 5 1
-4 1 5 6 2
-4 2 6 7 3
-4 3 7 4 0
-0 1 255 255 255
-1 2 255 255 255
-2 3 255 255 255
-3 0 255 255 255
-2 0 0 0 0`;
-
-describe("A ply string with an invalid header should", () => {
-  it("throw an Error exeption when end_header is missing", () => {
-    expect(() => {
-      ply.loadFromString("");
-    }).toThrow();
-  });
-});
-
-describe("A PlyAscii object should", function () {
-  let plyFile: ply.PlyAscii;
-
-  beforeEach(function () {
-    plyFile = ply.loadFromString(testPly);
-  });
-
-  it("have comments", () => {
-    expect(plyFile.comments()).toEqual([
-      "author: Greg Turk",
-      "object: another cube",
-    ]);
-  });
-
-  it("have a format", () => {
-    expect(plyFile.format().format).toEqual("ascii");
-    expect(plyFile.format().endianness).toEqual("");
-    expect(plyFile.format().version).toEqual("1.0");
-  });
-
-  it("have elements", () => {
-    expect(plyFile.elementNames()).toEqual(["vertex", "face", "edge"]);
-    expect(plyFile.hasElement("vertex")).toBeTrue();
-    expect(plyFile.hasElement("face")).toBeTrue();
-    expect(plyFile.hasElement("edge")).toBeTrue();
-    expect(plyFile.hasElement("invalid")).toBeFalse();
-  });
-
-  it("not throw an error when calling getElement", () => {
-    expect(() => {
-      plyFile.getElement("vertex");
-    }).not.toThrow();
-    expect(() => {
-      plyFile.getElement("face");
-    }).not.toThrow();
-    expect(() => {
-      plyFile.getElement("edge");
-    }).not.toThrow();
-  });
-
-  it("return the correct property names", () => {
-    expect(plyFile.getElement("vertex").properyNames()).toEqual([
-      "x",
-      "y",
-      "z",
-      "red",
-      "green",
-      "blue",
-    ]);
-    expect(plyFile.getElement("face").properyNames()).toEqual(["vertex_index"]);
-    expect(plyFile.getElement("edge").properyNames()).toEqual([
-      "vertex1",
-      "vertex2",
-      "red",
-      "green",
-      "blue",
-    ]);
-  });
-});
-*/

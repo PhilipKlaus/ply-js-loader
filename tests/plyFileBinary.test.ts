@@ -1,7 +1,7 @@
 import * as fs from "fs";
-import { PlyFile, PlyFormat } from "../src/plyFile";
-import { PlyElement } from "../src/plyMetadata";
-import { toArrayBuffer } from "../src/tools";
+import { PlyElement, PlyFile } from "../src";
+import { toArrayBuffer } from "../src/buffers";
+import { PlyFormat } from "../src/plyFile";
 
 describe("A PlyFile created from binary should", () => {
   let ply: PlyFile;
@@ -76,20 +76,26 @@ describe("A PlyFile created from binary should", () => {
       });
 
       it("which return numerical data", () => {
-        expect(vertex.getProperty("x").data).toEqual([0, 0, 0, 0, 1, 1, 1, 1]);
-        expect(vertex.getProperty("y").data).toEqual([0, 0, 1, 1, 0, 0, 1, 1]);
-        expect(vertex.getProperty("z").data).toEqual([0, 1, 1, 0, 0, 1, 1, 0]);
-        expect(vertex.getProperty("red").data).toEqual([
+        expect(vertex.getProperty("x").getData()).toEqual([
+          0, 0, 0, 0, 1, 1, 1, 1,
+        ]);
+        expect(vertex.getProperty("y").getData()).toEqual([
+          0, 0, 1, 1, 0, 0, 1, 1,
+        ]);
+        expect(vertex.getProperty("z").getData()).toEqual([
+          0, 1, 1, 0, 0, 1, 1, 0,
+        ]);
+        expect(vertex.getProperty("red").getData()).toEqual([
           255, 255, 255, 255, 0, 0, 0, 0,
         ]);
-        expect(vertex.getProperty("green").data).toEqual([
+        expect(vertex.getProperty("green").getData()).toEqual([
           0, 0, 0, 0, 0, 0, 0, 0,
         ]);
-        expect(vertex.getProperty("blue").data).toEqual([
+        expect(vertex.getProperty("blue").getData()).toEqual([
           0, 0, 0, 0, 255, 255, 255, 255,
         ]);
 
-        expect(face.getProperty("vertex_indices").data).toEqual([
+        expect(face.getProperty("vertex_indices").getData()).toEqual([
           0, 1, 2, 0, 2, 3, 7, 6, 5, 7, 5, 4, 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6,
           2, 2, 6, 7, 2, 7, 3, 3, 7, 4, 3, 4, 0,
         ]);
