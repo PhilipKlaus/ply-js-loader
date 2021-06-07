@@ -1,27 +1,25 @@
 import { PlyElement, PlyProperty } from ".";
 import { ByteSizes, copyAscii, copyBinary, getListLength } from "./tools";
 
-export class PlyFormat {
-  constructor(
-    public type: string,
-    public version: string,
-    public endianness: string
-  ) {}
-
-  static empty(): PlyFormat {
-    return new PlyFormat("", "", "");
-  }
+export interface PlyFormat {
+  type: string;
+  version: string;
+  endianness: string;
 }
 
 export class PlyFile {
-  public format: PlyFormat;
+  private itsType: string;
+  private itsVersion: string;
+  private itsEndianness: string;
   public comments: Array<string>;
 
   private elements: Map<string, PlyElement>;
   private currentElement: string;
 
   constructor(ply?: string | ArrayBuffer) {
-    this.format = PlyFormat.empty();
+    this.itsType = "";
+    this.itsVersion = "";
+    this.itsEndianness = "";
     this.comments = new Array<string>();
     this.elements = new Map<string, PlyElement>();
 
@@ -44,6 +42,14 @@ export class PlyFile {
     } else {
       // Empty Ply file is created
     }
+  }
+
+  public getFormat(): PlyFormat {
+    return {
+      type: this.itsType,
+      version: this.itsVersion,
+      endianness: this.itsEndianness,
+    };
   }
 
   public getElement(element: string): PlyElement {
@@ -79,13 +85,12 @@ export class PlyFile {
 
   private parseFormat(lineParts: string[]) {
     const formatParts = lineParts[1].split("_");
-    let format = formatParts[0];
-    let endianness = "";
+    this.itsType = formatParts[0];
+    this.itsEndianness = "";
     if (formatParts.length > 1) {
-      endianness = formatParts.slice(1).join("_");
+      this.itsEndianness = formatParts.slice(1).join("_");
     }
-    let version = lineParts[2];
-    this.format = new PlyFormat(format, version, endianness);
+    this.itsVersion = lineParts[2];
   }
 
   private parseElement(lineParts: string[]) {
@@ -140,7 +145,7 @@ export class PlyFile {
   }
 
   private isLittleEndian(): boolean {
-    return this.format.endianness == "little_endian";
+    return this.itsEndianness == "little_endian";
   }
 
   private parseAsciiBody(body: string) {

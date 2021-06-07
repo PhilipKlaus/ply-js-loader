@@ -14,7 +14,12 @@ describe("A PlyFile created from a string should", () => {
   });
 
   it("return format info", () => {
-    expect(ply.format).toEqual(new PlyFormat("ascii", "1.0", ""));
+    const expected: PlyFormat = {
+      type: "ascii",
+      version: "1.0",
+      endianness: "",
+    };
+    expect(ply.getFormat()).toEqual(expected);
   });
 
   it("have elements", () => {

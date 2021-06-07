@@ -18,7 +18,11 @@ describe("A PlyFile created from binary should", () => {
   });
 
   it("return format info", () => {
-    expect(ply.format).toEqual(new PlyFormat("binary", "1.0", "little_endian"));
+    expect(ply.getFormat()).toEqual({
+      type: "binary",
+      version: "1.0",
+      endianness: "little_endian",
+    });
   });
 
   it("have elements", () => {
