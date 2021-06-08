@@ -1,5 +1,11 @@
 import { PlyElement, PlyProperty } from ".";
-import { ByteSizes, copyAscii, copyBinary, getListLength } from "./tools";
+import {
+  ByteSizes,
+  copyAscii,
+  copyBinary,
+  createArray,
+  getListLength,
+} from "./tools";
 
 export interface PlyFormat {
   type: string;
@@ -44,7 +50,7 @@ export class PlyFile {
     }
   }
 
-  public getFormat(): PlyFormat {
+  getFormat(): PlyFormat {
     return {
       type: this.itsType,
       version: this.itsVersion,
@@ -52,19 +58,35 @@ export class PlyFile {
     };
   }
 
-  public getElement(element: string): PlyElement {
+  getElement(element: string): PlyElement {
     if (!this.hasElement(element)) {
       throw Error(`Element ${element} not found`);
     }
     return this.elements.get(element) as PlyElement;
   }
 
-  public elementNames(): Array<string> {
+  elementNames(): Array<string> {
     return Array.from(this.elements.keys());
   }
 
-  public hasElement(element: string): boolean {
+  hasElement(element: string): boolean {
     return this.elementNames().includes(element);
+  }
+
+  getVertexPositions(element: string = "vertex"): any {
+    const vertex = this.getElement(element);
+    const x = vertex.getProperty("x");
+    const y = vertex.getProperty("y");
+    const z = vertex.getProperty("z");
+
+    const numVertices = x.getData().length;
+    const positions = createArray(x.getType(), numVertices * 3);
+    for (let i = 0; i < numVertices; ++i) {
+      positions[i * 3] = x.getData()[i];
+      positions[i * 3 + 1] = y.getData()[i];
+      positions[i * 3 + 2] = z.getData()[i];
+    }
+    return positions;
   }
 
   // ------------ Private methods ------------

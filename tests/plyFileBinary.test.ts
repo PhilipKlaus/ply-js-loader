@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import { PlyElement, PlyFile } from "../src";
 import { toArrayBuffer } from "../src/buffers";
-import { PlyFormat } from "../src/plyFile";
 
 describe("A PlyFile created from binary should", () => {
   let ply: PlyFile;
@@ -33,6 +32,14 @@ describe("A PlyFile created from binary should", () => {
 
   it("return element names", () => {
     expect(ply.elementNames()).toEqual(["vertex", "face"]);
+  });
+
+  it("return vertex positions", () => {
+    expect(ply.getVertexPositions()).toEqual(
+      new Float32Array([
+        0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,
+      ])
+    );
   });
 
   describe("return elements", () => {

@@ -39,6 +39,32 @@ export function extractBinary(
   }
 }
 
+export function createArray(
+  type: string,
+  length: number = 0
+) {
+  switch (type) {
+    case "char":
+      return new Int8Array(length);
+    case "uchar":
+      return new Uint8Array(length);
+    case "short":
+      return new Int16Array(length);
+    case "ushort":
+      return new Uint16Array(length);
+    case "int":
+      return new Int32Array(length);
+    case "uint":
+      return new Uint32Array(length);
+    case "float":
+      return new Float32Array(length);
+    case "double":
+      return new Float64Array(length);
+    default:
+      throw Error(`The PLY standard does not support type ${type}`);
+  }
+}
+
 export function copyAscii(property: PlyProperty, value: string) {
   property.getData().push(Number(value));
 }
