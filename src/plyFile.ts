@@ -17,7 +17,7 @@ export class PlyFile {
   private itsType: string;
   private itsVersion: string;
   private itsEndianness: string;
-  public comments: Array<string>;
+  private comments: Array<string>;
 
   private elements: Map<string, PlyElement>;
   private currentElement: string;
@@ -56,6 +56,10 @@ export class PlyFile {
       version: this.itsVersion,
       endianness: this.itsEndianness,
     };
+  }
+
+  getComments(): Array<string> {
+    return this.comments;
   }
 
   getElement(element: string): PlyElement {

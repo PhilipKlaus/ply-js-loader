@@ -10,7 +10,10 @@ describe("A PlyFile created from a string should", () => {
   });
 
   it("return comments", () => {
-    expect(ply.comments).toEqual(["author: Greg Turk", "object: another cube"]);
+    expect(ply.getComments()).toEqual([
+      "author: Greg Turk",
+      "object: another cube",
+    ]);
   });
 
   it("return format info", () => {
