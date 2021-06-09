@@ -1,11 +1,5 @@
-import { PlyFile, ParsingConfiguration, PlyParsingResult } from "./plyFile";
-import { PlyElement, PlyProperty, PlyMetadata } from "./plyMetadata";
+import { PlyElement } from "./plyElement";
+import { PlyFile } from "./plyFile";
+import { PlyProperty } from "./plyProperty";
 
-export {
-    PlyFile,
-    PlyElement,
-    PlyProperty,
-    PlyMetadata,
-    ParsingConfiguration,
-    PlyParsingResult
-}
+export { PlyFile, PlyElement, PlyProperty };

@@ -6,8 +6,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "prettier-format": "prettier --config .prettierrc src/**/*.ts tests/**/*.ts --write",
+    "prettier-watch": "onchange src/**/*.ts tests/**/*.ts -- prettier --write {{changed}}",
     "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
-    "coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test"
+    "coverage": "nyc -r text -e .ts npm run test"
   },
   "prepublish": "tsc",
   "repository": {
@@ -19,7 +22,8 @@
     "3d",
     "cloud",
     "mesh",
-    "webgl"
+    "webgl",
+    "threejs"
   ],
   "author": "Philip Klaus",
   "license": "MIT",
@@ -29,10 +33,17 @@
   "homepage": "https://github.com/PhilipKlaus/ply-js-loader#readme",
   "devDependencies": {
     "@types/jasmine": "^3.5.11",
-    "@types/node": "^14.6.2",
+    "@types/node": "^15.12.1",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "jasmine": "^3.5.0",
     "nyc": "^15.1.0",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.6"
+    "onchange": "^7.1.0",
+    "prettier": "^2.3.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
   }
 }
