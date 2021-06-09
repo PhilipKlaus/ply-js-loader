@@ -93,6 +93,22 @@ export class PlyFile {
     return positions;
   }
 
+  getVertexColors(element: string = "vertex"): any {
+    const vertex = this.getElement(element);
+    const red = vertex.getProperty("red");
+    const green = vertex.getProperty("green");
+    const blue = vertex.getProperty("blue");
+
+    const numVertices = red.getData().length;
+    const colors = createArray(red.getType(), numVertices * 3);
+    for (let i = 0; i < numVertices; ++i) {
+      colors[i * 3] = red.getData()[i];
+      colors[i * 3 + 1] = green.getData()[i];
+      colors[i * 3 + 2] = blue.getData()[i];
+    }
+    return colors;
+  }
+
   // ------------ Private methods ------------
 
   private static extractHeader(ply: string): string {
