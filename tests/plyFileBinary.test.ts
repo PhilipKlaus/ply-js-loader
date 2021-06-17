@@ -39,18 +39,18 @@ describe("A PlyFile created from binary should", () => {
 
   it("return vertex positions", () => {
     expect(ply.getVertexPositions()).toEqual(
-      new Float32Array([
+      [
         0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,
-      ])
+      ]
     );
   });
 
   it("return vertex colors", () => {
     expect(ply.getVertexColors()).toEqual(
-      new Uint8Array([
+      [
         255, 0, 0, 255, 0, 0, 255, 0, 0, 255, 0, 0, 0, 0, 255, 0, 0, 255, 0, 0,
         255, 0, 0, 255,
-      ])
+      ]
     );
   });
 

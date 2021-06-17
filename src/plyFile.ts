@@ -77,14 +77,14 @@ export class PlyFile {
     return this.elementNames().includes(element);
   }
 
-  getVertexPositions(element: string = "vertex"): any {
+  getVertexPositions(element: string = "vertex"): Array<number> {
     const vertex = this.getElement(element);
     const x = vertex.getProperty("x");
     const y = vertex.getProperty("y");
     const z = vertex.getProperty("z");
 
     const numVertices = x.getData().length;
-    const positions = createArray(x.getType(), numVertices * 3);
+    const positions = new Array<number>(numVertices * 3);
     for (let i = 0; i < numVertices; ++i) {
       positions[i * 3] = x.getData()[i];
       positions[i * 3 + 1] = y.getData()[i];
@@ -93,14 +93,14 @@ export class PlyFile {
     return positions;
   }
 
-  getVertexColors(element: string = "vertex"): any {
+  getVertexColors(element: string = "vertex"): Array<number> {
     const vertex = this.getElement(element);
     const red = vertex.getProperty("red");
     const green = vertex.getProperty("green");
     const blue = vertex.getProperty("blue");
 
     const numVertices = red.getData().length;
-    const colors = createArray(red.getType(), numVertices * 3);
+    const colors = new Array<number>(numVertices * 3);
     for (let i = 0; i < numVertices; ++i) {
       colors[i * 3] = red.getData()[i];
       colors[i * 3 + 1] = green.getData()[i];
