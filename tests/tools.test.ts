@@ -11,7 +11,7 @@ it("When calling copyAscii a property should return correct data", () => {
   copyAscii(prop, "100.5");
   copyAscii(prop, "200.5");
   copyAscii(prop, "300.5");
-  expect(prop.getData()).toEqual([100.5, 200.5, 300.5]);
+  expect(prop.getData()).toEqual(new Float32Array([100.5, 200.5, 300.5]));
 });
 
 it("When calling copyBinary a property should return correct data", () => {

@@ -1,4 +1,5 @@
 import { PlyProperty } from ".";
+import { TypedArray } from "./plyProperty";
 
 export const ByteSizes: Map<string, number> = new Map([
   ["char", 1],
@@ -65,8 +66,34 @@ export function createArray(
   }
 }
 
+export function toTypedArray(
+  type: string,
+  array: Array<number>
+): TypedArray {
+  switch (type) {
+    case "char":
+      return Int8Array.from(array);
+    case "uchar":
+      return Uint8Array.from(array);
+    case "short":
+      return Int16Array.from(array);
+    case "ushort":
+      return Uint16Array.from(array);
+    case "int":
+      return Int32Array.from(array);
+    case "uint":
+      return Uint32Array.from(array);
+    case "float":
+      return Float32Array.from(array);
+    case "double":
+      return  Float64Array.from(array);
+    default:
+      throw Error(`The PLY standard does not support type ${type}`);
+  }
+}
+
 export function copyAscii(property: PlyProperty, value: string) {
-  property.getData().push(Number(value));
+  property.push(Number(value));
 }
 
 export function copyBinary(
@@ -81,7 +108,7 @@ export function copyBinary(
     byteOffset,
     littleEndian
   );
-  property.getData().push(parsed);
+  property.push(parsed);
 }
 
 export function getListLength(

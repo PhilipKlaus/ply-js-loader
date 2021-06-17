@@ -32,16 +32,18 @@ describe("A PlyProperty should", () => {
   });
 
   it("set and get data", () => {
-    // Test returning data as reference
     property.setData([1, 2, 3]);
-    expect(property.getData()).toEqual([1, 2, 3]);
-    property.getData()[0] = 4;
-    expect(property.getData()).toEqual([4, 2, 3]);
+    expect(property.getData()).toEqual(new Float32Array([1, 2, 3]));
+    property.setData([4, 5, 6]);
+    expect(property.getData()).toEqual(new Float32Array([4, 5, 6]));
+  });
 
-    // Test returning data as copy
-    property.setData([1, 2, 3]);
-    expect(property.getData()).toEqual([1, 2, 3]);
-    property.getDataCopy()[0] = 4;
-    expect(property.getData()).toEqual([1, 2, 3]);
+  it("push and get data", () => {
+    property.push(1);
+    expect(property.getData()).toEqual(new Float32Array([1]));
+    property.push(2);
+    expect(property.getData()).toEqual(new Float32Array([1, 2]));
+    property.push(3);
+    expect(property.getData()).toEqual(new Float32Array([1, 2, 3]));
   });
 });
