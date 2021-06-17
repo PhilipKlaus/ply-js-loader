@@ -36,6 +36,12 @@ describe("A PlyFile created from a string should", () => {
     expect(ply.elementNames()).toEqual(["vertex", "face", "edge"]);
   });
 
+  it("should throw an Error when getElement is called with an non-existing element name", () => {
+    expect(() => {
+      ply.getElement("foo");
+    }).toThrow();
+  });
+
   describe("return elements", () => {
     it("which have properties", () => {
       expect(ply.getElement("vertex").hasProperty("x")).toBeTrue();

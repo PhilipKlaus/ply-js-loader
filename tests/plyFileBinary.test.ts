@@ -37,17 +37,27 @@ describe("A PlyFile created from binary should", () => {
     expect(ply.elementNames()).toEqual(["vertex", "face"]);
   });
 
+  it("should throw an Error when getElement is called with an non-existing element name", () => {
+    expect(() => {
+      ply.getElement("foo");
+    }).toThrow();
+  });
+
   it("return vertex positions", () => {
-    expect(ply.getVertexPositions()).toEqual([
-      0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,
-    ]);
+    expect(ply.getVertexPositions()).toEqual(
+      new Float32Array([
+        0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,
+      ])
+    );
   });
 
   it("return vertex colors", () => {
-    expect(ply.getVertexColors()).toEqual([
-      255, 0, 0, 255, 0, 0, 255, 0, 0, 255, 0, 0, 0, 0, 255, 0, 0, 255, 0, 0,
-      255, 0, 0, 255,
-    ]);
+    expect(ply.getVertexColors()).toEqual(
+      new Uint8Array([
+        255, 0, 0, 255, 0, 0, 255, 0, 0, 255, 0, 0, 0, 0, 255, 0, 0, 255, 0, 0,
+        255, 0, 0, 255,
+      ])
+    );
   });
 
   describe("return elements", () => {

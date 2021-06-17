@@ -1,9 +1,10 @@
 import { PlyElement, PlyProperty } from ".";
+import { TypedArray } from "./plyProperty";
 import {
   ByteSizes,
   copyAscii,
   copyBinary,
-  createArray,
+  createTypedArray,
   getListLength,
 } from "./tools";
 
@@ -77,14 +78,14 @@ export class PlyFile {
     return this.elementNames().includes(element);
   }
 
-  getVertexPositions(element: string = "vertex"): Array<number> {
+  getVertexPositions(element: string = "vertex"): TypedArray {
     const vertex = this.getElement(element);
     const x = vertex.getProperty("x");
     const y = vertex.getProperty("y");
     const z = vertex.getProperty("z");
 
     const numVertices = x.getData().length;
-    const positions = new Array<number>(numVertices * 3);
+    const positions = createTypedArray(x.getType(), numVertices * 3);
     for (let i = 0; i < numVertices; ++i) {
       positions[i * 3] = x.getData()[i];
       positions[i * 3 + 1] = y.getData()[i];
@@ -93,14 +94,14 @@ export class PlyFile {
     return positions;
   }
 
-  getVertexColors(element: string = "vertex"): Array<number> {
+  getVertexColors(element: string = "vertex"): TypedArray {
     const vertex = this.getElement(element);
     const red = vertex.getProperty("red");
     const green = vertex.getProperty("green");
     const blue = vertex.getProperty("blue");
 
     const numVertices = red.getData().length;
-    const colors = new Array<number>(numVertices * 3);
+    const colors = createTypedArray(red.getType(), numVertices * 3);
     for (let i = 0; i < numVertices; ++i) {
       colors[i * 3] = red.getData()[i];
       colors[i * 3 + 1] = green.getData()[i];

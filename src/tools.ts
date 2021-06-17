@@ -40,10 +40,7 @@ export function extractBinary(
   }
 }
 
-export function createArray(
-  type: string,
-  length: number = 0
-) {
+export function createTypedArray(type: string, length: number = 0) {
   switch (type) {
     case "char":
       return new Int8Array(length);
@@ -66,10 +63,7 @@ export function createArray(
   }
 }
 
-export function toTypedArray(
-  type: string,
-  array: Array<number>
-): TypedArray {
+export function toTypedArray(type: string, array: Array<number>): TypedArray {
   switch (type) {
     case "char":
       return Int8Array.from(array);
@@ -86,7 +80,7 @@ export function toTypedArray(
     case "float":
       return Float32Array.from(array);
     case "double":
-      return  Float64Array.from(array);
+      return Float64Array.from(array);
     default:
       throw Error(`The PLY standard does not support type ${type}`);
   }

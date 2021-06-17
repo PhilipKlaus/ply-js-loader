@@ -1,5 +1,5 @@
 import { PlyElement } from "./plyElement";
 import { PlyFile } from "./plyFile";
-import { PlyProperty } from "./plyProperty";
+import { PlyProperty, TypedArray } from "./plyProperty";
 
-export { PlyFile, PlyElement, PlyProperty };
+export { PlyFile, PlyElement, PlyProperty, TypedArray };
