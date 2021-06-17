@@ -2,6 +2,7 @@ import { PlyProperty } from "../src";
 import {
   copyAscii,
   copyBinary,
+  createTypedArray,
   extractBinary,
   getListLength,
   toTypedArray,
@@ -87,5 +88,22 @@ it("When toTypedArray is called with an invalid type an Error should be thrown",
   const data = new Array(1, 2, 3);
   expect(() => {
     toTypedArray("invalid", data);
+  }).toThrow();
+});
+
+it("When createTypedArray is called it should return a TypedArray", () => {
+  expect(createTypedArray("char")).toEqual(new Int8Array());
+  expect(createTypedArray("uchar")).toEqual(new Uint8Array());
+  expect(createTypedArray("short")).toEqual(new Int16Array());
+  expect(createTypedArray("ushort")).toEqual(new Uint16Array());
+  expect(createTypedArray("int")).toEqual(new Int32Array());
+  expect(createTypedArray("uint")).toEqual(new Uint32Array());
+  expect(createTypedArray("float")).toEqual(new Float32Array());
+  expect(createTypedArray("double")).toEqual(new Float64Array());
+});
+
+it("When createTypedArray is called with an invalid type an Error should be thrown", () => {
+  expect(() => {
+    createTypedArray("invalid", 10);
   }).toThrow();
 });
