@@ -11,7 +11,7 @@ export type TypedArray =
   | Float64Array;
 
 export class PlyProperty {
-  private itsData: Array<number> = new Array();
+  private itsData: Array<number> = [];
   private itsName: string;
   private itsType: string;
   private itsListLenType: string | undefined;

@@ -1,4 +1,4 @@
-export const testPly: string = `ply
+export const testPly = `ply
 format ascii 1.0
 comment author: Greg Turk
 comment object: another cube

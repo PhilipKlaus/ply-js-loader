@@ -78,7 +78,7 @@ export class PlyFile {
     return this.elementNames().includes(element);
   }
 
-  getVertexPositions(element: string = "vertex"): TypedArray {
+  getVertexPositions(element = "vertex"): TypedArray {
     const vertex = this.getElement(element);
     const x = vertex.getProperty("x");
     const y = vertex.getProperty("y");
@@ -94,7 +94,7 @@ export class PlyFile {
     return positions;
   }
 
-  getVertexColors(element: string = "vertex"): TypedArray {
+  getVertexColors(element = "vertex"): TypedArray {
     const vertex = this.getElement(element);
     const red = vertex.getProperty("red");
     const green = vertex.getProperty("green");
@@ -192,7 +192,7 @@ export class PlyFile {
   }
 
   private parseAsciiBody(body: string) {
-    let bodySplit = body.split("\n");
+    const bodySplit = body.split("\n");
     let lineIdx = 0;
 
     this.elements.forEach((e, _, __) => {

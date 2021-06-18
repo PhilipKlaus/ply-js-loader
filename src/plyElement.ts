@@ -19,7 +19,7 @@ export class PlyElement {
     return this.itsAmount;
   }
 
-  public addProperty(property: PlyProperty) {
+  public addProperty(property: PlyProperty): void {
     this.itsProperties.set(property.getName(), property);
   }
 

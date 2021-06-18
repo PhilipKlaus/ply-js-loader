@@ -66,14 +66,14 @@ it("When extractBinary is called it should return correct data", () => {
 });
 
 it("When extractBinary is called with an invalid type an Error should be thrown", () => {
-  let dataView = new DataView(new Int8Array([127]).buffer);
+  const dataView = new DataView(new Int8Array([127]).buffer);
   expect(() => {
     extractBinary("invalid", dataView, 0, true);
   }).toThrow();
 });
 
 it("When toTypedArray is called it should return a TypedArray", () => {
-  const data = new Array(1, 2, 3);
+  const data = [1, 2, 3];
   expect(toTypedArray("char", data)).toEqual(new Int8Array([1, 2, 3]));
   expect(toTypedArray("uchar", data)).toEqual(new Uint8Array([1, 2, 3]));
   expect(toTypedArray("short", data)).toEqual(new Int16Array([1, 2, 3]));
@@ -85,7 +85,7 @@ it("When toTypedArray is called it should return a TypedArray", () => {
 });
 
 it("When toTypedArray is called with an invalid type an Error should be thrown", () => {
-  const data = new Array(1, 2, 3);
+  const data = [1, 2, 3];
   expect(() => {
     toTypedArray("invalid", data);
   }).toThrow();

@@ -16,7 +16,7 @@ export function extractBinary(
   type: string,
   dataView: DataView,
   byteOffset: number,
-  littleEndian: boolean = true
+  littleEndian = true
 ) {
   switch (type) {
     case "char":
@@ -40,7 +40,7 @@ export function extractBinary(
   }
 }
 
-export function createTypedArray(type: string, length: number = 0) {
+export function createTypedArray(type: string, length = 0) {
   switch (type) {
     case "char":
       return new Int8Array(length);
