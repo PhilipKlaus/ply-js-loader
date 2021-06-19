@@ -19,7 +19,10 @@ var config = {
 var JsLibBuild = Object.assign({}, config, {
   name: "JsLibBuild",
   entry: "./src/index.ts",
+  target: "web",
   output: {
+    library: "plyjs",
+    libraryTarget: "umd",
     filename: 'plyjs.js',
     path: path.resolve(__dirname, './lib')
   },

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <title>Threejs example</title>
+    <style>
+      body { margin: 0; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <script src="three.js"></script>
+    <script src="../../lib/plyjs.js"></script>
+    <script>
+      // Three js setup
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.append(renderer.domElement);
+
+      // The PLY data
+      const testPly=`ply\nformat ascii 1.0\ncomment author: Greg Turk\ncomment object: another cube\nelement vertex 8
+property float x\nproperty float y\nproperty float z\nproperty uchar red\nproperty uchar green
+property uchar blue\nelement face 7\nproperty list uchar int vertex_index\nelement edge 5\nproperty int vertex1
+property int vertex2\nproperty uchar red\nproperty uchar green\nproperty uchar blue\nend_header\n0 0 0 255 0 0
+0 0 1 255 0 0\n0 1 1 255 0 0\n0 1 0 255 0 0\n1 0 0 0 0 255\n1 0 1 0 0 255\n1 1 1 0 0 255\n1 1 0 0 0 255\n3 0 1 2
+3 0 2 3\n4 7 6 5 4\n4 0 4 5 1\n4 1 5 6 2\n4 2 6 7 3\n4 3 7 4 0\n0 1 255 255 255\n1 2 255 255 255\n2 3 255 255 255
+3 0 255 255 255\n2 0 0 0 0`;
+
+      // Load the PLY data
+      const ply = new plyjs.PlyFile(testPly);
+
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(ply.getVertexPositions(), 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(ply.getVertexColors(), 3));
+
+      const material = new THREE.PointsMaterial( { vertexColors: true, size: 0.5 } );
+      const cloud = new THREE.Points( geometry, material );
+      scene.add( cloud );
+      camera.position.z = 5;
+
+      function animate() {
+        requestAnimationFrame( animate );
+        cloud.rotation.x += 0.01;
+        cloud.rotation.y += 0.01;
+        renderer.render( scene, camera );
+      }
+      animate();
+    </script>
+  </body>
+</html>
